@@ -13,11 +13,16 @@ export function Project({ name, description, codeUrl, playableUrl }: Project) {
                     clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 85% 25%, 70% 0%, 55% 25%, 40% 0%, 25% 25%, 10% 0%, 0% 20%)",
                 }}
             />
+            <div className="flex flex-row items-center justify-between">
             <h2 className="flex flex-row items-center font-sans text-3xl font-extrabold uppercase tracking-wider text-white">
-                <Icon glyph="explore" size={60} />
+                <Icon glyph="explore" size={50} />
                 {name}
             </h2>
-            <p className="text-md font-medium text-white mx-6">
+            <button className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500">
+                <Icon className="text-white" glyph="delete" size={40} />
+            </button>
+            </div>
+           <p className="text-md font-medium text-white mx-6">
                 {description}
             </p>
             <div className="relative w-full flex flex-wrap items-center gap-2">
