@@ -65,6 +65,13 @@ export const createProjectAirtable = async ({ codeUrl, playableUrl, description,
     });
 });
 
+export const deleteProjectAirtable = async (pid: string) => new Promise((resolve, reject) => {
+    projectsBase.destroy([ pid ], (err, deletedRecs) => {
+        if (err) return reject(err);
+        resolve(deletedRecs);
+    })
+});
+
 export async function POST(request: Request) {
     const { name, description, hackatime, codeUrl, playableUrl } = await request.json();
     try {

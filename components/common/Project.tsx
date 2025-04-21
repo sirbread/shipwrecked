@@ -1,8 +1,9 @@
 'use client'
 import type { Project } from "@/app/api/projects/route"
+import { deleteProject } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 
-export function Project({ name, description, codeUrl, playableUrl }: Project) {
+export function Project({ id, name, description, codeUrl, playableUrl }: Project) {
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#38b6e3] shadow-lg"
@@ -14,13 +15,16 @@ export function Project({ name, description, codeUrl, playableUrl }: Project) {
                 }}
             />
             <div className="flex flex-row items-center justify-between">
-            <h2 className="flex flex-row items-center font-sans text-3xl font-extrabold uppercase tracking-wider text-white">
-                <Icon glyph="explore" size={50} />
-                {name}
-            </h2>
-            <button className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500">
-                <Icon className="text-white" glyph="delete" size={40} />
-            </button>
+                <h2 className="flex flex-row items-center font-sans text-3xl font-extrabold uppercase tracking-wider text-white">
+                    <Icon glyph="explore" size={50} />
+                    {name}
+                </h2>
+                <button 
+                    className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
+                    onClick={() => deleteProject(id)}
+                >
+                    <Icon className="text-white" glyph="delete" size={40} />
+                </button>
             </div>
            <p className="text-md font-medium text-white mx-6">
                 {description}
