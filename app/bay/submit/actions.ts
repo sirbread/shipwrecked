@@ -3,6 +3,7 @@
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
 import { z } from "zod";
+import { createProjectAirtable } from "@/app/api/projects/route";
 
 const schema = z.object({
   // Project Details
@@ -56,6 +57,43 @@ const schema = z.object({
   "What are we doing well?": z.string().optional(),
   "How can we improve?": z.string().optional(),
 });
+
+const projectSchema = z.object({
+  // Project Details
+  name: z.string().min(4, {
+    message: "Project Name must contain at least 4 characters.",
+  }),
+  codeUrl: z.string().url({
+    message: "The Code URL must be a valid URL",
+  }),
+  playableUrl: z.string().url({
+    message: "The Demo URL must be a valid URL",
+  }),
+  description: z.string().optional(),
+  hackatime: z.string()
+})
+
+export async function createProject(state: FormSave, payload: FormData): Promise<FormSave> {
+  const data: any = {};
+  payload.entries().forEach(([key, value]) => data[key] = value);
+
+  const validated = await projectSchema.safeParseAsync(data);
+  if (!validated.success) {
+    console.log(validated.error);
+    console.log(validated.error.flatten().fieldErrors)
+    const errors = validated.error.flatten().fieldErrors;
+    return {
+      errors,
+      data: undefined
+    }
+  }
+
+  const result = await createProjectAirtable(data);
+  return {
+    errors: undefined,
+    data: result as any
+  }
+}
 
 type Data = Record<string, FormDataEntryValue | FormDataEntryValue[]>;
 
