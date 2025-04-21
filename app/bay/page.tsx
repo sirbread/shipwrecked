@@ -4,7 +4,8 @@ import styles from './page.module.css';
 import ProgressBar from '@/components/common/ProgressBar';
 import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Project } from '@/components/common/Project';
 
 export default function BayPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,19 @@ export default function BayPage() {
     setToastMessage(message);
     setToastType(type);
   };
+
+  const [projects, setProjects] = useState([]);
+  async function getUserProjects() {
+    const response = await fetch("/api/projects");
+    const data = await response.json();
+
+    console.log(data[0]);
+    setProjects(data);
+  }
+
+  useEffect(() => {
+    getUserProjects();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -80,6 +94,12 @@ export default function BayPage() {
           <li>Smooth animations</li>
         </ul>
       </Modal>
+
+      {projects.map((project: any, index: number) => (
+        <Project key={index} 
+          {...project}
+        />
+      ))}
 
       {toastMessage && (
         <Toast
