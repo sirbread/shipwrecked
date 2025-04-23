@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   // Only protect the exact /bay path
-  if (request.nextUrl.pathname !== '/bay') {
+  if (!request.nextUrl.pathname.startsWith('/bay')) {
     return NextResponse.next();
   }
 
@@ -54,7 +54,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configure the middleware to only run on the exact /bay path
+// Configure the middleware to only run on the /bay path and its subpaths
 export const config = {
-  matcher: '/bay',
-}; 
+  matcher: ['/bay', '/bay/:path*'],
+};

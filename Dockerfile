@@ -3,6 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
 RUN yarn install --frozen-lockfile
+ENV AIRTABLE_API_KEY=testing
 RUN yarn build
 
 # Production stage

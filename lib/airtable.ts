@@ -19,6 +19,7 @@ export async function getRecords(tableName: string, options?: {
   maxRecords?: number;
 }): Promise<AirtableRecord[]> {
   try {
+    console.log('\n🚨 I HIT AIRTABLE - getRecords 🚨\n');
     const records = await base(tableName)
       .select({
         filterByFormula: options?.filterByFormula,
@@ -38,9 +39,29 @@ export async function getRecords(tableName: string, options?: {
   }
 }
 
+// Function to get the count of records in a table
+export async function getRecordCount(tableName: string, options?: {
+  filterByFormula?: string;
+}): Promise<number> {
+  try {
+    console.log('\n🚨 I HIT AIRTABLE - getRecordCount 🚨\n');
+    const records = await base(tableName)
+      .select({
+        filterByFormula: options?.filterByFormula || "",
+      })
+      .all();
+    
+    return records.length;
+  } catch (error) {
+    console.error(`Error getting record count from ${tableName}:`, error);
+    throw error;
+  }
+}
+
 // Generic function to create a record
 export async function createRecord(tableName: string, fields: Record<string, any>): Promise<AirtableRecord> {
   try {
+    console.log('\n🚨 I HIT AIRTABLE - createRecord 🚨\n');
     const record = await base(tableName).create(fields);
     return {
       id: record.id,
@@ -60,6 +81,7 @@ export async function updateRecord(
   fields: Record<string, any>
 ): Promise<AirtableRecord> {
   try {
+    console.log('\n🚨 I HIT AIRTABLE - updateRecord 🚨\n');
     const record = await base(tableName).update(recordId, fields);
     return {
       id: record.id,
@@ -75,6 +97,7 @@ export async function updateRecord(
 // Generic function to delete a record
 export async function deleteRecord(tableName: string, recordId: string): Promise<void> {
   try {
+    console.log('\n🚨 I HIT AIRTABLE - deleteRecord 🚨\n');
     await base(tableName).destroy(recordId);
   } catch (error) {
     console.error(`Error deleting record from ${tableName}:`, error);

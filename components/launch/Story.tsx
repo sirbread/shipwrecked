@@ -1,39 +1,57 @@
-'use client';
+"use client";
 import { motion, useMotionValue, animate } from "motion/react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 import Shore from "./Shore";
 import Info from "./Info";
 import Waves from "./Waves";
 import Bay from "./Bay";
-import Faq from "./Faq";
+import CallToAction from "./CallToAction";
 
-export const ScrollProgressContext = createContext<[number, (n: number) => void]>([0, () => {}]);
+export const ScrollProgressContext = createContext<
+  [number, (n: number, duration?: number) => void]
+>([0, () => { }]);
 
 export default function Story() {
   const [scrollPercent, setScrollPercent] = useState(0);
   const motionValue = useMotionValue(scrollPercent);
+  // Add reference to track current animation
+  const currentAnimationRef = useRef(null);
 
-  const shoreEnd = 0.21;
-  const wavesEnd = 0.45;
-  const infoEnd = 0.55;
-  const waves2End = 0.70;
-  const bayEnd = 0.87;
-  const waves3End = 0.95;
+  const sections = {
+    shore: { start: 0, end: 0.25 },
+    // waves from 0.2 to 0.3
+    info: { start: 0.25, end: 0.5 },
+    // waves from 0.45 to 0.55
+    bay: { start: 0.5, end: 0.75 },
+    // waves from 0.7 to 0.8
+    cta: { start: 0.75, end: 1 },
+  };
+
+  const WAVE_BOUNDS: [number, number][] = [
+    [0.2, 0.3],
+    [0.45, 0.55],
+    [0.7, 0.8],
+  ];
+
+  const WAVE_OFFSET = 0.075;
 
   useEffect(() => {
     // Sync motion value to scrollPercent
     const unsubscribe = motionValue.on("change", (latest: number) => {
       setScrollPercent(latest);
       // set scrolltop to match scrollpercent
-      const scrollTop = latest * (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+      const scrollTop =
+        latest *
+        (document.documentElement.scrollHeight -
+          document.documentElement.clientHeight);
       window.scrollTo({
-        top: scrollTop
+        top: scrollTop,
       });
     });
 
     return () => unsubscribe();
   }, [motionValue]);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -48,20 +66,37 @@ export default function Story() {
     };
   }, []);
 
-  const scrollToPercent = (percent: number) => {
-    animate(motionValue, percent, {
+  const scrollToPercent = (percent: number, duration?: number) => {
+    // Cancel any existing animation
+    if (currentAnimationRef.current) {
+      currentAnimationRef.current.stop();
+    }
+
+    // Start new animation and store the control
+    currentAnimationRef.current = animate(motionValue, percent, {
       type: "spring",
-      duration: 5,
-      ease: 'easeIn', // 'cubic-bezier(0.83, 0, 0.17, 1)'
+      duration: duration || 5,
+      ease: "easeIn", // 'cubic-bezier(0.83, 0, 0.17, 1)'
       bounce: 0,
     });
+
     // correct for scrollTop
-    const scrollTop = percent * (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    const scrollTop =
+      percent *
+      (document.documentElement.scrollHeight -
+        document.documentElement.clientHeight);
     window.scrollTo({
       top: scrollTop,
       behavior: "smooth",
     });
-  }
+  };
+
+  const animateSectionIfWithinBounds = (start: number, end: number) =>
+    scrollPercent >= start && scrollPercent < end;
+
+  const activeWaveBounds = WAVE_BOUNDS.find(
+    ([start, end]) => scrollPercent >= start && scrollPercent <= end
+  ) || [undefined, undefined];
 
   return (
     <ScrollProgressContext.Provider value={[scrollPercent, scrollToPercent]}>
@@ -72,27 +107,47 @@ export default function Story() {
           left: 0,
         }}
       >
-        {/* map 15-25% to 0 opacity to 1 to 0 */}
-        {/* <motion.div className="fixed inset-0 z-50 pointer-events-none" style={{
-          opacity:
-            scrollPercent < 0.15 ? 0 // less than 15% is invisible
-            : scrollPercent >= 0.15 && scrollPercent <= 0.2 ? (scrollPercent - 0.15) / 0.05 // transitions 0 to 1 on 15-20%
-            : scrollPercent > 0.2 && scrollPercent <= 0.22 ? 1 // is 1 on 20-22%
-            : scrollPercent > 0.22 && scrollPercent <= 0.25 ? 1 - (scrollPercent - 0.22) / 0.05 // transitions 1 to 0 on 22-25%
-            : 0, // greater than 25% is invisible
-        }} /> */}
+        <div>
+          {animateSectionIfWithinBounds(
+            sections.shore.start,
+            sections.shore.end
+          ) && <Shore next={sections.info.start + WAVE_OFFSET} />}
 
-        <div className="">
-          shore: 0-0.21
-          {scrollPercent < (shoreEnd + (wavesEnd-shoreEnd)/2) && <Shore />}
-          {(scrollPercent >= shoreEnd && scrollPercent < wavesEnd) && <Waves start={shoreEnd} end={wavesEnd} /> }
-          {(scrollPercent >= (wavesEnd - (wavesEnd-shoreEnd)/2) && scrollPercent < infoEnd + (waves2End-infoEnd)/2) && <Info bayStart={waves2End} shoreEnd={shoreEnd}/> }
-          {(scrollPercent >= infoEnd && scrollPercent < waves2End) && <Waves start={infoEnd} end={waves2End} /> }
-          {(scrollPercent >= waves2End - (waves2End-infoEnd)/2) && scrollPercent < bayEnd + (waves3End-bayEnd)/2 && <Bay start={waves2End} end={bayEnd} /> }
-          {(scrollPercent >= bayEnd && scrollPercent < waves3End) && <Waves start={bayEnd} end={waves3End} /> }
-          {(scrollPercent >= waves3End - (waves3End-bayEnd)/2) && <Faq /> }
+          {animateSectionIfWithinBounds(
+            sections.info.start,
+            sections.info.end
+          ) && (
+              <Info
+                previous={sections.shore.end - WAVE_OFFSET}
+                next={sections.bay.start + WAVE_OFFSET}
+                start={sections.info.start}
+                end={sections.info.end}
+              />
+            )}
+
+          {animateSectionIfWithinBounds(
+            sections.bay.start,
+            sections.bay.end
+          ) && (
+              <Bay
+                previous={sections.bay.end - WAVE_OFFSET}
+                next={sections.cta.start + WAVE_OFFSET}
+                start={sections.bay.start}
+                end={sections.bay.end}
+              />
+            )}
+
+          {(animateSectionIfWithinBounds(
+            sections.cta.start,
+            sections.cta.end
+          ) ||
+            scrollPercent === 1) && (
+              <CallToAction previous={sections.bay.end - WAVE_OFFSET} />
+            )}
+
+          <Waves start={activeWaveBounds[0]} end={activeWaveBounds[1]} />
         </div>
       </motion.div>
     </ScrollProgressContext.Provider>
-  )
+  );
 }

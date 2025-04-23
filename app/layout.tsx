@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Baloo_Da_2, Poppins } from "next/font/google";
 import "./globals.css";
+import "@/app/info/info.css";
+import "@/app/api/stats/init";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -16,16 +18,27 @@ const baloo = Baloo_Da_2({
 
 export const metadata: Metadata = {
   title: "Shipwrecked",
-  description: "Join us for an unforgettable four days of hacking and adventure at Shipwrecked!",
+  description:
+    "Shipwrecked is a 130 person, Flagship Hackathon run by Hack Club happening this summer, August 8-11th on Cathleen Stone Island in the Boston harbor.",
   openGraph: {
     title: "Shipwrecked",
-    description: "Join us for an unforgettable four days of hacking and adventure at Shipwrecked!",
+    description:
+      "Shipwrecked is a 130 person, Flagship Hackathon run by Hack Club happening this summer, August 8-11th on Cathleen Stone Island in the Boston harbor.",
     siteName: "Shipwrecked",
+    images: [
+      {
+        url: '/launchImgSmaller.webp', 
+        alt: 'Shipwrecked Hackathon dates and location', 
+      },
+    ],
   },
   twitter: {
+    card: "summary_large_image", // Use summary_large_image for image previews
     title: "Shipwrecked",
-    description: "Join us for an unforgettable four days of hacking and adventure at Shipwrecked!",
-  }
+    description:
+      "Shipwrecked is a 130 person, Flagship Hackathon run by Hack Club happening this summer, August 8-11th on Cathleen Stone Island in the Boston harbor.",
+    images: ['/launchImgSmaller.webp'], // Path to your image
+  },
 };
 
 export default function RootLayout({

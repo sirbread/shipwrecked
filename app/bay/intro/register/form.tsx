@@ -33,46 +33,46 @@ export default function Form({ hasSession }: { hasSession?: boolean }) {
         </h1>
         Ahoy! Your registration is almost ready, just complete the form below!
         {/* Hide Email field if user has prev logged in */}
-        {!hasSession && (
-          <div className="lg:flex justify-center items-center">
-            <div className="my-5 mx-6">
-              <label className="text-lg font-semibold max-lg:flex justify-center max-lg:mb-2">
-                Email
-                <p className="text-red-500 inline">*</p>
-              </label>
+        <form className="flex flex-col justify-center" action={formAction}>
+          {!hasSession && (
+            <div className="lg:flex justify-center items-center">
+              <div className="my-5 mx-6">
+                <label className="text-lg font-semibold max-lg:flex justify-center max-lg:mb-2">
+                  Email
+                  <p className="text-red-500 inline">*</p>
+                </label>
 
-              <div className="lg:flex justify-center items-center">
-                <div className="max-lg:flex justify-center">
-                  <input
-                    name="Email"
-                    required
-                    className="mr-2 lg:mr-8 w-82 px-4 py-2 bg-gray-100 disabled:bg-gray-200 rounded outline-1 outline-gray-200"
-                  />
-                </div>
-
-                <p className="text-center"> or </p>
-
-                <div className="max-lg:flex justify-center">
-                  <button
-                    className="ml-2 lg:ml-8 my-2"
-                    onClick={() =>
-                      signIn("slack", { callbackUrl: "/bay/login/success" })
-                    }
-                  >
-                    <img
-                      src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
-                      srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
+                <div className="lg:flex justify-center items-center">
+                  <div className="max-lg:flex justify-center">
+                    <input
+                      name="Email"
+                      required
+                      className="mr-2 lg:mr-8 w-82 px-4 py-2 bg-gray-100 disabled:bg-gray-200 rounded outline-1 outline-gray-200"
                     />
-                  </button>
+                  </div>
+
+                  <p className="text-center"> or </p>
+
+                  <div className="max-lg:flex justify-center">
+                    <button
+                      className="ml-2 lg:ml-8 my-2"
+                      onClick={() =>
+                        signIn("slack", { callbackUrl: "/bay/login/success" })
+                      }
+                    >
+                      <img
+                        src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
+                        srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {/* 
+          )}
+          {/* 
           Form elements are grouped by two when a screen is large, else wrap
         */}
-        <form className="flex flex-col justify-center" action={formAction}>
           <FormGroup name="About You">
             <div className="lg:flex justify-center">
               <FormInput
