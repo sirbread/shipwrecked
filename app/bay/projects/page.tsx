@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import styles from './page.module.css';
+import styles from '../page.module.css';
 import ProgressBar from '@/components/common/ProgressBar';
 import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
@@ -8,7 +8,7 @@ import { useState, useEffect, useActionState } from 'react';
 import { Project } from '@/components/common/Project';
 import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
-import { createProject } from './submit/actions';
+import { createProject } from '../submit/actions';
 
 export default function BayPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,7 +68,7 @@ export default function BayPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Welcome to the Bay!</h1>
+      <h1 className={styles.title}>Your projects</h1>
       
       <div className={styles.progressSection}>
         <h2>Progress Bar Examples</h2>
@@ -123,26 +123,10 @@ export default function BayPage() {
       </button>
 
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Example Modal"
-        okText="Got it!"
-      >
-        <p>This is an example modal that demonstrates the following features:</p>
-        <ul className={styles.modalList}>
-          <li>Custom title and button text</li>
-          <li>Click outside to close</li>
-          <li>Escape key to close</li>
-          <li>Accessible focus management</li>
-          <li>Smooth animations</li>
-        </ul>
-      </Modal>
-
-      <Modal
         isOpen={isOpenProjectModal}
         onClose={() => setIsOpenProjectModal(false)}
-        title="Pick a Hackatime Project"
-        okText="Let's Go"
+        title="Create a new project"
+        okText="Done"
       >
         <form action={formAction}>
           <FormInput
@@ -211,4 +195,4 @@ export default function BayPage() {
       )}
     </div>
   );
-} 
+}

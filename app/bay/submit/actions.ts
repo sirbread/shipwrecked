@@ -88,16 +88,16 @@ export async function createProject(state: FormSave, payload: FormData): Promise
     }
   }
 
-  const result = await createProjectAirtable(data);
+  await createProjectAirtable(data);
   return {
     errors: undefined,
-    data: result as any
+    data
   }
 }
 
 export async function deleteProject(airtableProjectId: string) {
   try {
-    return await deleteProject(airtableProjectId);
+    return await deleteProjectAirtable(airtableProjectId);
   } catch (err) {
     return err;
   }
