@@ -9,8 +9,10 @@ import { Project } from '@/components/common/Project';
 import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
 import { createProject } from '../submit/actions';
+import { useSession } from 'next-auth/react';
 
 export default function BayPage() {
+  const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
@@ -28,15 +30,27 @@ export default function BayPage() {
       description: "",
       hackatime: "",
       codeUrl: "",
-      playableUrl: ""
+      playableUrl: "",
+      screenshot: "",
+      userId: ""
     },
   });
+
+  // Update userId when session changes
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const userId = (session.user as any).id;
+      if (userId && state.data) {
+        state.data.userId = userId;
+      }
+    }
+  }, [session, status]);
 
   const [projects, setProjects] = useState([]);
   const [hackatimeProjects, setHackatimeProjects] = useState<Record<string, string>>({});
 
-  const deleteProjectId = (index: number, id: string) => (cb: (id: string) => Promise<unknown>) => {
-    cb(id).then(() => setProjects(projects.filter((_, i) => i !== index)));
+  const deleteProjectId = (index: number, projectID: string, userId: string) => (cb: (projectID: string, userId: string) => Promise<unknown>) => {
+    cb(projectID, userId).then(() => setProjects(projects.filter((_, i) => i !== index)));
   }
 
   async function getHackatimeProjects() {
@@ -155,10 +169,17 @@ export default function BayPage() {
           </FormInput>
           <FormInput
             fieldName='playableUrl'
-            placeholder='Playable URL'
+            placeholder='Playable URL (optional)'
             state={state}
           >
-            Playable URL
+            Playable URL (optional)
+          </FormInput>
+          <FormInput
+            fieldName='screenshot'
+            placeholder='Screenshot URL (optional)'
+            state={state}
+          >
+            Screenshot URL (optional)
           </FormInput>
           <FormSelect 
             fieldName='hackatime'
@@ -179,13 +200,17 @@ export default function BayPage() {
       </Modal>
 
 
-      {projects.map((project: any, index: number) => (
-        <Project key={index} 
-          deleteHandler={deleteProjectId(index, project.id)}
-          {...project}
-        />
-      ))}
-
+      <Project 
+        projectID=""
+        userId=""
+        name="PixelPainter"
+        description="PixelPainter is a simple web-based pixel art tool that lets users create 16x16 or 32x32 retro-style drawings using a customizable color palette. Built with HTML Canvas and TypeScript, it includes essential tools like an eraser, grid view, and export to PNG. Inspired by old-school sprite editors, it's mobile-friendly and perfect for quick sketching or game asset creation."
+        codeUrl=''
+        playableUrl=''
+        screenshot=''
+        submitted={false}
+        deleteHandler={deleteProjectId(0, "", "")}
+      />
       {toastMessage && (
         <Toast
           message={toastMessage}

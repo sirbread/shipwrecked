@@ -55,17 +55,17 @@ export default function Bay() {
   //     });
   // }, [isOpenProjectModal]);
 
-  async function getUserProjects() {
-    const response = await fetch("/api/projects");
-    const data = await response.json();
+  // async function getUserProjects() {
+  //   const response = await fetch("/api/projects");
+  //   const data = await response.json();
 
-    console.log(data[0]);
-    setProjects(data);
-  }
+  //   console.log(data[0]);
+  //   setProjects(data);
+  // }
 
-  useEffect(() => {
-    getUserProjects();
-  }, []);
+  // useEffect(() => {
+  //   getUserProjects();
+  // }, []);
 
   return (
     <div className={styles.container}>

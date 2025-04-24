@@ -67,6 +67,7 @@ model Account {
 }
 
 model Session {
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -107,7 +108,7 @@ model Project {
   codeUrl String @unique // unique to avoid two people using the same code URL for their project
   playableUrl String @unique
   screenshot String @unique // unique url to (a) screenshot(s) of their project
-  hackatime String // hackatime project name
+  hackatime String? // hackatime project name
   submitted Boolean @default(false)
 
   // user relation
