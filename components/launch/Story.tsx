@@ -1,21 +1,23 @@
 "use client";
-import { motion, useMotionValue, animate } from "motion/react";
+import { motion, useMotionValue, animate, AnimationPlaybackControls } from "motion/react";
 import { createContext, useEffect, useState, useRef } from "react";
 import Shore from "./Shore";
 import Info from "./Info";
 import Waves from "./Waves";
 import Bay from "./Bay";
 import CallToAction from "./CallToAction";
+import TriggerButton from "./TriggerButton";
+import { PrefillData } from "@/types/prefill";
 
 export const ScrollProgressContext = createContext<
   [number, (n: number, duration?: number) => void]
 >([0, () => { }]);
 
-export default function Story() {
+export default function Story({ prefillData }: { prefillData: PrefillData }) {
   const [scrollPercent, setScrollPercent] = useState(0);
   const motionValue = useMotionValue(scrollPercent);
-  // Add reference to track current animation
-  const currentAnimationRef = useRef(null);
+  // Fix type for animation ref
+  const currentAnimationRef = useRef<AnimationPlaybackControls | null>(null);
 
   const sections = {
     shore: { start: 0, end: 0.25 },
@@ -107,6 +109,11 @@ export default function Story() {
           left: 0,
         }}
       >
+        {scrollPercent < sections.cta.start && (
+          <div className="absolute top-8 right-8 z-50">
+            <TriggerButton targetPercent={1} waves>Sign up</TriggerButton>
+          </div>
+        )}
         <div>
           {animateSectionIfWithinBounds(
             sections.shore.start,
@@ -142,7 +149,10 @@ export default function Story() {
             sections.cta.end
           ) ||
             scrollPercent === 1) && (
-              <CallToAction previous={sections.bay.end - WAVE_OFFSET} />
+              <CallToAction 
+                previous={sections.bay.end - WAVE_OFFSET} 
+                prefillData={prefillData}
+              />
             )}
 
           <Waves start={activeWaveBounds[0]} end={activeWaveBounds[1]} />

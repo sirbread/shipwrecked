@@ -6,9 +6,10 @@ import Link from "next/link";
 import { ScrollProgressContext } from "./Story";
 import Form from "@/app/rsvp/form";
 import SignupProgress from "@/components/common/SignupProgress";
+import { PrefillData } from "@/types/prefill";
 
 // import { motion } from "motion/react";
-export default function CallToAction({ previous }:{ previous: number }) {
+export default function CallToAction({ previous, prefillData }: { previous: number, prefillData: PrefillData }) {
   const [, scrollToPercent] = useContext(ScrollProgressContext);
   
   return (
@@ -29,7 +30,7 @@ export default function CallToAction({ previous }:{ previous: number }) {
           </div>
           <div className="mt-1 sm:mt-4 bg-sky-blue/30 border border-sky-blue p-2 sm:p-4 rounded-md w-full max-w-4xl min-h-[400px] sm:min-h-[500px] backdrop-blur-sm flex flex-col justify-between text-center overflow-hidden">
             <div className="flex-1 flex flex-col items-center justify-center gap-1 sm:gap-2">
-              <Form />
+              <Form hasSession={false} prefillData={prefillData} />
             </div>
           </div>
           <div className="text-center px-2 text-sm sm:text-base mt-2">

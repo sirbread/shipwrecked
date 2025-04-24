@@ -29,6 +29,9 @@ export default function Bay({ start, end, previous, next }:{ start: number, end:
         backgroundSize: "cover",
         backgroundPosition: "center right",
       }}>
+        <div className="absolute top-8 right-8 z-50">
+          <TriggerButton targetPercent={1} waves>Sign up</TriggerButton>
+        </div>
         <div className="w-screen h-screen flex flex-col items-end justify-end p-8 md:pb-20 relative">
           <div className="bg-sand/60 border border-sand p-6 rounded-md w-full max-w-4xl backdrop-blur-md text-dark-brown">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
