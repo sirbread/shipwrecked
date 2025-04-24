@@ -1,10 +1,10 @@
 "use server";
 
+import { z } from "zod";
+import { createProject, deleteProject } from "@/lib/project";
+import { auth } from "@/lib/auth";
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
-import { z } from "zod";
-import { createProject, deleteProject } from "@/app/api/projects/route";
-import { auth } from "@/lib/auth";
 
 const schema = z.object({
   // Project Details

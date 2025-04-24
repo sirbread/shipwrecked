@@ -1,6 +1,7 @@
 import { fetchHackatimeProjects } from "@/lib/hackatime";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { createProject } from "@/lib/project";
 
 export type Project = {
     projectID: string
@@ -14,6 +15,21 @@ export type Project = {
     userId: string
 }
 
+export type ProjectInput = Omit<Project, 'projectID' | 'submitted'>
+
+// Helper functions
+async function deleteProject(projectID: string, userId: string) {
+    return prisma.project.delete({
+        where: {
+            projectID_userId: {
+                projectID,
+                userId
+            }
+        }
+    });
+}
+
+// API Route handlers
 export async function GET(request: Request) { 
     const { searchParams } = new URL(request.url);
     
@@ -39,41 +55,6 @@ export async function GET(request: Request) {
     }
 }
 
-export const createProject = async ({ 
-    name, 
-    description, 
-    codeUrl, 
-    playableUrl, 
-    screenshot, 
-    hackatime, 
-    userId 
-}: Omit<Project, 'projectID' | 'submitted'>) => {
-    return prisma.project.create({
-        data: {
-            projectID: crypto.randomUUID(),
-            name,
-            description,
-            codeUrl,
-            playableUrl,
-            screenshot,
-            hackatime,
-            userId,
-            submitted: false
-        }
-    });
-};
-
-export const deleteProject = async (projectID: string, userId: string) => {
-    return prisma.project.delete({
-        where: {
-            projectID_userId: {
-                projectID,
-                userId
-            }
-        }
-    });
-};
-
 export async function POST(request: Request) {
     try {
         const session = await auth();
@@ -92,6 +73,28 @@ export async function POST(request: Request) {
             userId: (session.user as any).id
         });
         return Response.json({ success: true, data: createdProject });
+    } catch (err) {
+        return Response.json({ success: false, err });
+    }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        const session = await auth();
+        if (!session?.user) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        const { projectID } = await request.json();
+        await prisma.project.delete({
+            where: {
+                projectID_userId: {
+                    projectID,
+                    userId: (session.user as any).id
+                }
+            }
+        });
+        return Response.json({ success: true });
     } catch (err) {
         return Response.json({ success: false, err });
     }
