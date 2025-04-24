@@ -36,10 +36,10 @@ function SearchParamsHandler({ children }: { children: (prefillData: PrefillData
   const [prefillData, setPrefillData] = useState<PrefillData>({});
 
   useEffect(() => {
-    const firstName = searchParams.get('first');
-    const lastName = searchParams.get('last');
-    const email = searchParams.get('email');
-    const birthdayISO = searchParams.get('birthday');
+    const firstName = searchParams.get('first')?.trim().replace(/[^A-Za-z0-9-]/g, '');
+    const lastName = searchParams.get('last')?.trim().replace(/[^A-Za-z0-9-]/g, '');
+    const email = searchParams.get('email')?.trim().replace(/[^A-Za-z0-9-@.]/g, '');
+    const birthdayISO = searchParams.get('birthday')?.trim().replace(/[^A-Za-z0-9-:T]/g, '');
 
     const formattedBirthday = birthdayISO ? birthdayISO.split('T')[0] : null;
 
@@ -106,22 +106,24 @@ export default function Home() {
     <ReactLenis root>
       <div>
         <main className="h-[1000vh]">
-          <Link href="https://hackclub.com">
-            <img
-              style={{
-                position: "fixed",
-                top: "20px",
-                left: "0",
-                border: "0",
-                width: "180px",
-                zIndex: "999",
-                opacity: bannerOpacity,
-                transition: "opacity 0.2s ease-out"
-              }}
-              src="https://assets.hackclub.com/banners/2025.svg"
-              alt="Hack Club"
-            />
-          </Link>
+          {bannerOpacity > 0 && (
+            <Link href="https://hackclub.com">
+              <img
+                style={{
+                  position: "fixed",
+                  top: "20px",
+                  left: "0",
+                  border: "0",
+                  width: "180px",
+                  zIndex: "999",
+                  opacity: bannerOpacity,
+                  transition: "opacity 0.2s ease-out"
+                }}
+                src="https://assets.hackclub.com/banners/2025.svg"
+                alt="Hack Club"
+              />
+            </Link>
+          )}
           {isLocalEnv && (
             <div
               style={{

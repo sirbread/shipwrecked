@@ -1,0 +1,35 @@
+# .github/workflows/build-on-pr.yml
+name: Build on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'  
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run TypeScript Check
+        run: yarn tsc --noEmit
+
+      - name: Build project
+        env:
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+        run: yarn build
