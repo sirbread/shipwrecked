@@ -22,8 +22,8 @@ export async function createProject(data: ProjectInput) {
             description: data.description,
             codeUrl: data.codeUrl,
             playableUrl: data.playableUrl,
-            screenshot: data.screenshot,
-            hackatime: data.hackatime,
+            screenshot: data.screenshot || "",
+            hackatime: data.hackatime || "",
             userId: data.userId,
             submitted: false
         }
