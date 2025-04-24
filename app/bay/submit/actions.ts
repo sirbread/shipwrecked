@@ -3,7 +3,7 @@
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
 import { z } from "zod";
-import { createProject as createProjectAPI, deleteProject as deleteProjectAPI } from "@/app/api/projects/route";
+import { createProjectAirtable, deleteProjectAirtable } from "@/app/api/projects/route";
 
 const schema = z.object({
   // Project Details
@@ -88,16 +88,16 @@ export async function createProject(state: FormSave, payload: FormData): Promise
     }
   }
 
-  await createProjectAPI(data);
+  await createProjectAirtable(data);
   return {
     errors: undefined,
     data
   }
 }
 
-export async function deleteProject(projectID: string, userId: string) {
+export async function deleteProject(airtableProjectId: string) {
   try {
-    return await deleteProjectAPI(projectID, userId);
+    return await deleteProjectAirtable(airtableProjectId);
   } catch (err) {
     return err;
   }

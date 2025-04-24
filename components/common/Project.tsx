@@ -3,8 +3,8 @@ import type { Project } from "@/app/api/projects/route"
 import { deleteProject } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 
-type ProjectProps = Project & { deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
-export function Project({ projectID, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
+type ProjectProps = Project & { deleteHandler?: (cb: (id: string) => Promise<unknown>) => void };
+export function Project({ id, name, description, codeUrl, playableUrl, deleteHandler }: ProjectProps) {
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#38b6e3] shadow-lg"
@@ -24,7 +24,7 @@ export function Project({ projectID, name, description, codeUrl, playableUrl, de
                     className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
                     onClick={() => {
                         if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
-                            deleteHandler(() => deleteProject(projectID, userId));
+                            deleteHandler(() => deleteProject(id));
                         }
                     }}>
                     <Icon className="text-white" glyph="delete" size={40} />
