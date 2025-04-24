@@ -3,41 +3,52 @@ import styles from './page.module.css';
 import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
 import { useState, useEffect, useActionState } from 'react';
-import { createProject } from './submit/actions';
+import { createProjectAction } from './submit/actions';
+import { Project } from '@/components/common/Project';
+import FormSelect from '@/components/form/FormSelect';
+import FormInput from '@/components/form/FormInput';
+import { useSession } from 'next-auth/react';
 
 export default function Bay() {
+  const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
+  const [isOpenProjectModal, setIsOpenProjectModal] = useState<boolean>(false);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+    setToastMessage(message);
+    setToastType(type);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSubmit = () => {
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
-
-  const [state, formAction, pending] = useActionState(createProject, {
+  const [state, formAction, pending] = useActionState(createProjectAction, {
     errors: undefined,
     data: {
       name: "",
       description: "",
       hackatime: "",
       codeUrl: "",
-      playableUrl: ""
+      playableUrl: "",
+      screenshot: "",
+      userId: ""
     },
   });
+
+  // Update userId when session changes
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const userId = (session.user as any).id;
+      if (userId && state.data) {
+        state.data.userId = userId;
+      }
+    }
+  }, [session, status]);
 
   const [projects, setProjects] = useState([]);
   const [hackatimeProjects, setHackatimeProjects] = useState<Record<string, string>>({});
 
-  const deleteProjectId = (index: number, id: string) => (cb: (id: string) => Promise<unknown>) => {
-    cb(id).then(() => setProjects(projects.filter((_, i) => i !== index)));
+  const deleteProjectId = (index: number, projectID: string, userId: string) => (cb: (projectID: string, userId: string) => Promise<unknown>) => {
+    cb(projectID, userId).then(() => setProjects(projects.filter((_, i) => i !== index)));
   }
 
   async function getHackatimeProjects() {
@@ -45,21 +56,18 @@ export default function Bay() {
     return await response.json();
   }
 
-  // // fetch latest hackatime project when the open modal changes
-  // useEffect(() => {
-  //   getHackatimeProjects()
-  //     .then((r: any[]) => {
-  //       const formattedProjects: Record<string, string> = {};
-  //       r.forEach(project => formattedProjects[project.name] = project.name);
-  //       setHackatimeProjects(formattedProjects);
-  //     });
-  // }, [isOpenProjectModal]);
+  useEffect(() => {
+    getHackatimeProjects()
+      .then((r: any[]) => {
+        const formattedProjects: Record<string, string> = {};
+        r.forEach(project => formattedProjects[project.name] = project.name);
+        setHackatimeProjects(formattedProjects);
+      });
+  }, [isOpenProjectModal]);
 
   async function getUserProjects() {
     const response = await fetch("/api/projects");
     const data = await response.json();
-
-    console.log(data[0]);
     setProjects(data);
   }
 
@@ -75,7 +83,7 @@ export default function Bay() {
         <div className={styles.stats}>
           <div className={styles.statItem}>
             <span className={styles.statLabel}>Total Ships</span>
-            <span className={styles.statValue}>0</span>
+            <span className={styles.statValue}>{projects.length}</span>
           </div>
           <div className={styles.statItem}>
             <span className={styles.statLabel}>Ships at Sea</span>
@@ -90,9 +98,9 @@ export default function Bay() {
         <div className={styles.actions}>
           <button 
             className={styles.modalButton}
-            onClick={handleOpenModal}
+            onClick={() => setIsOpenProjectModal(true)}
           >
-            Open Example Modal
+            Add Project
           </button>
           
           <a 
@@ -104,31 +112,80 @@ export default function Bay() {
         </div>
 
         <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          title="Example Modal"
+          isOpen={isOpenProjectModal}
+          onClose={() => setIsOpenProjectModal(false)}
+          title="Create a new project"
+          okText="Done"
         >
-          <div className={styles.modalContent}>
-            <p>This is an example modal with the following features:</p>
-            <ul>
-              <li>Centered on screen</li>
-              <li>Backdrop blur effect</li>
-              <li>Close button</li>
-              <li>Custom title</li>
-            </ul>
-            <button 
-              className={styles.submitButton}
-              onClick={handleSubmit}
+          <form action={formAction}>
+            <FormInput
+              fieldName='name'
+              placeholder='Project Name'
+              state={state}
+              required
             >
-              Submit
+              Project Name
+            </FormInput>
+            <FormInput
+              fieldName='description'
+              placeholder='Description'
+              state={state}
+              required
+            >
+              Description
+            </FormInput>
+            <FormInput
+              fieldName='codeUrl'
+              placeholder='Code URL'
+              state={state}
+              required
+            >
+              Code URL
+            </FormInput>
+            <FormInput
+              fieldName='playableUrl'
+              placeholder='Playable URL (optional)'
+              state={state}
+            >
+              Playable URL (optional)
+            </FormInput>
+            <FormInput
+              fieldName='screenshot'
+              placeholder='Screenshot URL (optional)'
+              state={state}
+            >
+              Screenshot URL (optional)
+            </FormInput>
+            <FormSelect 
+              fieldName='hackatime'
+              placeholder='Your Hackatime Projects'
+              required
+              values={hackatimeProjects}>
+                Your Hackatime Project
+              </FormSelect>
+            <button
+              type="submit"
+              className="mt-4 focus:outline-2 px-4 w-24 py-2 bg-indigo-500 hover:bg-indigo-700 hover:underline hover:font-bold rounded text-white self-center"
+              disabled={pending}
+            >
+              Ship!
             </button>
-          </div>
+          </form>
         </Modal>
 
-        {showToast && (
+        {projects.map((project: any) => (
+          <Project 
+            key={project.projectID}
+            deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
+            {...project}
+          />
+        ))}
+
+        {toastMessage && (
           <Toast
-            message="Form submitted successfully!"
-            onClose={() => setShowToast(false)}
+            message={toastMessage}
+            type={toastType}
+            onClose={() => setToastMessage(null)}
           />
         )}
       </div>
