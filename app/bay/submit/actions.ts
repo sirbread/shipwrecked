@@ -3,7 +3,8 @@
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
 import { z } from "zod";
-import { createProjectAirtable, deleteProjectAirtable } from "@/app/api/projects/route";
+import { createProject, deleteProject } from "@/app/api/projects/route";
+import { auth } from "@/lib/auth";
 
 const schema = z.object({
   // Project Details
@@ -70,10 +71,11 @@ const projectSchema = z.object({
     message: "The Demo URL must be a valid URL",
   }),
   description: z.string().optional(),
-  hackatime: z.string()
-})
+  hackatime: z.string(),
+  screenshot: z.string().optional()
+});
 
-export async function createProject(state: FormSave, payload: FormData): Promise<FormSave> {
+export async function createProjectAction(state: FormSave, payload: FormData): Promise<FormSave> {
   const data: any = {};
   payload.entries().forEach(([key, value]) => data[key] = value);
 
@@ -88,16 +90,30 @@ export async function createProject(state: FormSave, payload: FormData): Promise
     }
   }
 
-  await createProjectAirtable(data);
+  const session = await auth();
+  if (!session?.user) {
+    return {
+      errors: { auth: ["Not authenticated"] },
+      data: undefined
+    };
+  }
+
+  await createProject({
+    ...validated.data,
+    userId: (session.user as any).id,
+    playableUrl: validated.data.playableUrl || "",
+    screenshot: validated.data.screenshot || "",
+    description: validated.data.description || ""
+  });
   return {
     errors: undefined,
     data
   }
 }
 
-export async function deleteProject(airtableProjectId: string) {
+export async function deleteProjectAction(projectID: string, userId: string) {
   try {
-    return await deleteProjectAirtable(airtableProjectId);
+    return await deleteProject(projectID, userId);
   } catch (err) {
     return err;
   }
