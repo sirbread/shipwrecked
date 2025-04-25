@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 
 export default function Bay() {
   const { data: session, status } = useSession();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
   const [isOpenProjectModal, setIsOpenProjectModal] = useState<boolean>(false);
@@ -73,7 +73,11 @@ export default function Bay() {
 
   useEffect(() => {
     getUserProjects();
-  }, []);
+  }, []);  
+  
+  if (status === "loading") return <>Loading...</>
+  if (status === "unauthenticated") return <>Access Denied! <a className="underline text-blue-500" href="/api/auth/signin">Sign In</a></>
+
 
   return (
     <div className={styles.container}>
