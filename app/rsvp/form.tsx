@@ -12,6 +12,7 @@ import { signIn } from "next-auth/react";
 import Toast from "@/components/common/Toast";
 import Link from "next/link";
 import { PrefillData } from "@/types/prefill";
+import { useSearchParams } from 'next/navigation';
 
 // Client Side Registration Form
 //
@@ -25,13 +26,15 @@ export default function Form({ hasSession, prefillData }: { hasSession?: boolean
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error'>('error');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const searchParams = useSearchParams();
 
   // Initialize with empty strings or potentially prefilled data later in useEffect
   const [formData, setFormData] = useState({
     "First Name": "",
     "Last Name": "",
     "Email": "",
-    "Birthday": ""
+    "Birthday": "",
+    ...(searchParams.get('r') ? { "referral_code": searchParams.get('r') || "" } : {})
   });
   const hasPrefilled = useRef(false); // Ref to track if prefill happened
 
@@ -65,14 +68,18 @@ export default function Form({ hasSession, prefillData }: { hasSession?: boolean
         "First Name": "",
         "Last Name": "",
         "Email": "",
-        "Birthday": ""
+        "Birthday": "",
+        ...(searchParams.get('r') ? { "referral_code": searchParams.get('r') || "" } : {})
       });
       hasPrefilled.current = false; // Reset prefill tracker for potential subsequent renders
       setIsSubmitting(false);
     } else if (state.errors) {
       console.log('Form submission failed:', state.errors);
       setToastType('error');
-      setToastMessage("Ooops - something went wrong.  Please try again later!");
+      if (state.errors._form[0] === "This email is already RSVPed!")
+        setToastMessage("This email is already RSVPed!");
+      else
+        setToastMessage("Ooops - something went wrong.  Please try again later!");
       setIsSubmitting(false);
     }
   }, [state]);
@@ -167,6 +174,7 @@ export default function Form({ hasSession, prefillData }: { hasSession?: boolean
           <div className="lg:flex justify-center gap-1 md:gap-2 md:mt-auto mt-[-10]">
             <FormInput
               fieldName="Email"
+              type="email"
               state={state}
               placeholder="orpheus@hackclub.com"
               required

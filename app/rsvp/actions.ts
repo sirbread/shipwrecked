@@ -1,9 +1,11 @@
 "use server";
 
 import { opts } from "@/app/api/auth/[...nextauth]/route";
-import { createRecord } from "@/lib/airtable";
+import { createRecord, getRecords } from "@/lib/airtable";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
+import { headers } from 'next/headers';
+import { z as zod } from "zod";
 
 // The form schema for extra validation
 const schema = z.object({
@@ -14,7 +16,11 @@ const schema = z.object({
         message: "Last Name cannot be empty",
     }),
     Birthday: z.string().date("Birthday must be a valid date"),
+    referral_code: z.coerce.number().optional().transform(val => val === 0 ? undefined : val),
+    Email: z.string().email().optional(),
 });
+
+type SchemaType = z.infer<typeof schema>;
 
 type Data = Record<string, FormDataEntryValue | FormDataEntryValue[]>;
 
@@ -25,6 +31,33 @@ export type FormSave = {
     data: EntryData | undefined,
     valid: boolean
 };
+
+// Check if the email is already RSVPed
+async function isEmailRSVPed(email: string): Promise<boolean> {
+    const records = await getRecords("RSVPs", {
+        filterByFormula: `Email = '${email}'`,
+        sort: [],
+        maxRecords: 1,
+    });
+    return records.length > 0;
+}
+
+/**
+ * Gets the client's IP address from the request headers
+ */
+async function getClientIP(): Promise<string> {
+    const headersList = await headers();
+    const forwardedFor = headersList.get('x-forwarded-for');
+    if (forwardedFor) {
+        // Get the first IP in the list (client IP)
+        return forwardedFor.split(',')[0].trim();
+    }
+    const realIP = headersList.get('x-real-ip');
+    if (realIP) {
+        return realIP;
+    }
+    return 'unknown';
+}
 
 /**
  * Parses the form fields and saves to airtable
@@ -70,11 +103,16 @@ export async function save(state: FormSave, payload: FormData): Promise<FormSave
                 }
             }
 
-            (validated.data as Record<string, string>)["Email"] = email.data
+            (validated.data as SchemaType)["Email"] = email.data
         }
 
         // Create a new Entry
         const newEntry: EntryData = { ...validated.data };
+        
+        // Only include referral_code if it's not null
+        if (validated.data.referral_code === null) {
+            delete newEntry.referral_code;
+        }
 
         // If a session exists, use that email on the new entry
         if (session && session!.user && session!.user!.email)
@@ -83,6 +121,16 @@ export async function save(state: FormSave, payload: FormData): Promise<FormSave
         // If neither a session nor the form data contain an email, return prematurily
         if (!newEntry["Email"])
             return { errors: { Email: ["An email is required!"] }, data: undefined, valid: false }
+
+        // Check if email is already RSVPed
+        if (await isEmailRSVPed(newEntry["Email"] as string)) return {
+            errors: { _form: ["This email is already RSVPed!"] },
+            data: newEntry,
+            valid: false
+        }
+
+        // Add IP address to the entry
+        newEntry["IP Address"] = await getClientIP();
 
         try {
             // Create airtable record

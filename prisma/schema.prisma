@@ -104,9 +104,9 @@ model Project {
   projectID String @unique
   name String
   description String
-  codeUrl String @unique // unique to avoid two people using the same code URL for their project
-  playableUrl String @unique
-  screenshot String @unique // unique url to (a) screenshot(s) of their project
+  codeUrl String 
+  playableUrl String 
+  screenshot String 
   hackatime String // hackatime project name
   submitted Boolean @default(false)
 
