@@ -45,7 +45,7 @@ export async function GET(request: Request) {
 
         const projects = await prisma.project.findMany({
             where: {
-                userId: (session.user as any).id
+                userId: session.user.id
             }
         });
         return Response.json(projects);

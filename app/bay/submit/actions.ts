@@ -5,6 +5,7 @@ import { createProject, deleteProject } from "@/lib/project";
 import { auth } from "@/lib/auth";
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
+import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
   // Project Details
@@ -97,10 +98,9 @@ export async function createProjectAction(state: FormSave, payload: FormData): P
       data: undefined
     };
   }
-
   await createProject({
     ...validated.data,
-    userId: (session.user as any).id,
+    userId: session.user.id,
     playableUrl: validated.data.playableUrl || "",
     screenshot: validated.data.screenshot || "",
     description: validated.data.description || ""
