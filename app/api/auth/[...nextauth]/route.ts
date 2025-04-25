@@ -39,6 +39,13 @@ export const opts: NextAuthOptions = {
       maxAge: 60 * 10 // make email links valid for 10 minutes
     })
   ],
+  callbacks: {
+    async session({ session }) {
+      const user = await prisma.user.findFirst({ where: { email: session.user!.email as string }});
+      if (!user) return session;
+      return { user: { ...session.user, id: user.id }, expires: session.expires };
+    }
+  }
   // debug: true
 }
 
