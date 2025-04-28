@@ -4,12 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { createProject } from "@/lib/project";
 
 export type Project = {
-    id: string
-    name: string,
+    projectID: string
+    name: string
     description: string
-    codeUrl: string,
-    playableUrl?: string
-    hackatimeProject?: string
+    codeUrl: string
+    playableUrl: string
+    screenshot: string
+    hackatime?: string
+    submitted: boolean
+    userId: string
 }
 
 export type ProjectInput = Omit<Project, 'projectID' | 'submitted'>

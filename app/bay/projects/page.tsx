@@ -8,9 +8,11 @@ import { useState, useEffect, useActionState } from 'react';
 import { Project } from '@/components/common/Project';
 import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
-import { createProject } from '../submit/actions';
+import { createProjectAction } from '../submit/actions';
+import { useSession } from 'next-auth/react';
 
 export default function BayPage() {
+  const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
@@ -21,22 +23,34 @@ export default function BayPage() {
     setToastType(type);
   };
 
-  const [state, formAction, pending] = useActionState(createProject, {
+  const [state, formAction, pending] = useActionState(createProjectAction, {
     errors: undefined,
     data: {
       name: "",
       description: "",
       hackatime: "",
       codeUrl: "",
-      playableUrl: ""
+      playableUrl: "",
+      screenshot: "",
+      userId: ""
     },
   });
+
+  // Update userId when session changes
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const userId = (session.user as any).id;
+      if (userId && state.data) {
+        state.data.userId = userId;
+      }
+    }
+  }, [session, status]);
 
   const [projects, setProjects] = useState([]);
   const [hackatimeProjects, setHackatimeProjects] = useState<Record<string, string>>({});
 
-  const deleteProjectId = (index: number, id: string) => (cb: (id: string) => Promise<unknown>) => {
-    cb(id).then(() => setProjects(projects.filter((_, i) => i !== index)));
+  const deleteProjectId = (index: number, projectID: string, userId: string) => (cb: (projectID: string, userId: string) => Promise<unknown>) => {
+    cb(projectID, userId).then(() => setProjects(projects.filter((_, i) => i !== index)));
   }
 
   async function getHackatimeProjects() {
@@ -57,8 +71,6 @@ export default function BayPage() {
   async function getUserProjects() {
     const response = await fetch("/api/projects");
     const data = await response.json();
-
-    console.log(data[0]);
     setProjects(data);
   }
 
@@ -155,10 +167,17 @@ export default function BayPage() {
           </FormInput>
           <FormInput
             fieldName='playableUrl'
-            placeholder='Playable URL'
+            placeholder='Playable URL (optional)'
             state={state}
           >
-            Playable URL
+            Playable URL (optional)
+          </FormInput>
+          <FormInput
+            fieldName='screenshot'
+            placeholder='Screenshot URL (optional)'
+            state={state}
+          >
+            Screenshot URL (optional)
           </FormInput>
           <FormSelect 
             fieldName='hackatime'
@@ -174,14 +193,13 @@ export default function BayPage() {
           >
             Ship!
           </button>
-
         </form>
       </Modal>
 
-
-      {projects.map((project: any, index: number) => (
-        <Project key={index} 
-          deleteHandler={deleteProjectId(index, project.id)}
+      {projects.map((project: any) => (
+        <Project 
+          key={project.projectID}
+          deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
           {...project}
         />
       ))}
