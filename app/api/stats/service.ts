@@ -24,18 +24,18 @@ export class StatsService {
 
   private async updateStats() {
     try {
-      console.log('Fetching RSVP count...');
+      // console.log('Fetching RSVP count...');
       const currentCount = await getRecordCount("RSVPs");
       const lastCount = await getCount();
       
       if (currentCount !== lastCount) {
-        console.log(`RSVP count changed: ${lastCount} -> ${currentCount}`);
+        // console.log(`RSVP count changed: ${lastCount} -> ${currentCount}`);
         await setCount(currentCount);
       } else {
-        console.log(`RSVP count remains at: ${currentCount}`);
+        // console.log(`RSVP count remains at: ${currentCount}`);
       }
     } catch (error) {
-      console.error('Error in stats service:', error);
+      // console.error('Error in stats service:', error);
     }
   }
 
