@@ -96,15 +96,15 @@ export default function Bay() {
         
         <div className={styles.stats}>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Total Ships</span>
+            <span className={styles.statLabel}>Total Ships — </span>
             <span className={styles.statValue}>{projects.length}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Ships at Sea</span>
+            <span className={styles.statLabel}>Ships at Sea — </span>
             <span className={styles.statValue}>0</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Ships in Port</span>
+            <span className={styles.statLabel}>Ships in Port — </span>
             <span className={styles.statValue}>0</span>
           </div>
         </div>
@@ -119,7 +119,8 @@ export default function Bay() {
           
           <a 
             href="/bay/submit" 
-            className={styles.submitLink}
+            // className={styles.submitLink}
+            className="px-4 py-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 active:scale-95 transition font-semibold"
           >
             Submit New Ship
           </a>
@@ -187,14 +188,18 @@ export default function Bay() {
           </form>
         </Modal>
 
-        {projects.map((project: any) => (
-          <Project 
-            key={project.projectID}
-            deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
-            {...project}
-          />
-        ))}
+        <h1 className={`${styles.title} my-4`}>Your Projects</h1>
+        <div className="grid grid-cols-3 gap-3 my-4">
+          {projects.map((project: any) => (
+            <Project
+              key={project.projectID}
+              deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
+              {...project}
+            />
+          ))}
+        </div>
 
+        <Toaster richColors />
         {toastMessage && (
           <Toast
             message={toastMessage}
