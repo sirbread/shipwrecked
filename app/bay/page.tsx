@@ -3,11 +3,12 @@ import styles from './page.module.css';
 import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
 import { useState, useEffect, useActionState } from 'react';
-import { createProjectAction } from './submit/actions';
+import { createProjectAction, FormSave } from './submit/actions';
 import { Project } from '@/components/common/Project';
 import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
 import { useSession } from 'next-auth/react';
+import { Toaster, toast } from "sonner";
 
 export default function Bay() {
   const { data: session, status } = useSession();
@@ -21,7 +22,16 @@ export default function Bay() {
     setToastType(type);
   };
 
-  const [state, formAction, pending] = useActionState(createProjectAction, {
+  const [state, formAction, pending] = useActionState((state: FormSave, payload: FormData) => new Promise<FormSave>((resolve, reject) => {
+    toast.promise(createProjectAction(state, payload), {
+      loading: "Creating project...",
+      error: () => { reject(); return "Failed to create new project" },
+      success: data => {
+        resolve(data as FormSave);
+        return "Created new project"
+      }
+    });
+  }), {
     errors: undefined,
     data: {
       name: "",
