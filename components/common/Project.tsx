@@ -4,11 +4,12 @@ import { deleteProjectAction } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 import { toast } from "sonner"
 
+const MAX_DESCRIPTION_LENGTH = 330;
 type ProjectProps = Project & { userId: string, deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
-export function Project({ id, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
+export function Project({ projectID, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
     return (
         <div
-            className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#38b6e3] shadow-lg"
+            className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#47D1F6] shadow-lg"
         >
             <div
                 className="absolute bottom-0 left-0 right-0 h-16 bg-[#f9e9c7]"
@@ -26,7 +27,7 @@ export function Project({ id, name, description, codeUrl, playableUrl, deleteHan
                     onClick={() => {
                         if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
                             deleteHandler(async () => {
-                                await toast.promise(deleteProjectAction(id, userId), {
+                                await toast.promise(deleteProjectAction(projectID, userId), {
                                     success: `Deleted ${name}`,
                                     loading: `Deleting ${name}`,
                                     error: `Failed to delete ${name}`
@@ -38,14 +39,14 @@ export function Project({ id, name, description, codeUrl, playableUrl, deleteHan
                 </button>
             </div>
            <p className="text-md font-medium text-white mx-6">
-                {description.length <= 450 ? description : description.slice(0, 450) + "..."}
+                {description.length <= MAX_DESCRIPTION_LENGTH ? description : description.slice(0, MAX_DESCRIPTION_LENGTH) + "..."} 
             </p>
             <div className="relative w-full flex flex-wrap items-center gap-2">
-                <a href={codeUrl} className="flex flex-row items-center gap-2 w-40 h-8 m-2 rounded-lg bg-[#ffd84d] px-3 py-2 text-md font-bold text-[#1a5e7a] transition-transform hover:scale-105">
+                <a href={codeUrl} className="flex flex-row items-center gap-2 w-40 h-8 m-2 rounded-lg bg-[#4BC679] px-3 py-2 text-md font-bold text-white transition-transform hover:scale-105">
                         <Icon glyph="code" size={30} />
                         View Code
                 </a>
-                <a href={playableUrl} className="flex flex-row items-center gap-2 w-40 h-8 rounded-lg bg-white px-3 py-2 text-md font-bold text-[#1a5e7a] transition-transform hover:scale-105">
+                <a href={playableUrl} className="flex flex-row items-center gap-2 w-40 h-8 rounded-lg bg-[#F5E018] px-3 py-2 text-md font-bold text-[#1a5e7a] transition-transform hover:scale-105">
                     <Icon glyph="link" size={30} />
                     Try It!
                 </a>
