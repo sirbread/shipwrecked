@@ -4,8 +4,8 @@ import { deleteProjectAction } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 import { toast } from "sonner"
 
-type ProjectProps = Project & { deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
-export function Project({ projectID, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
+type ProjectProps = Project & { userId: string, deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
+export function Project({ id, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#38b6e3] shadow-lg"
@@ -26,7 +26,7 @@ export function Project({ projectID, name, description, codeUrl, playableUrl, de
                     onClick={() => {
                         if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
                             deleteHandler(async () => {
-                                await toast.promise(deleteProjectAction(projectID, userId), {
+                                await toast.promise(deleteProjectAction(id, userId), {
                                     success: `Deleted ${name}`,
                                     loading: `Deleting ${name}`,
                                     error: `Failed to delete ${name}`
