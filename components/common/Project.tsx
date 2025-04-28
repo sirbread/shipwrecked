@@ -2,6 +2,7 @@
 import type { Project } from "@/app/api/projects/route"
 import { deleteProjectAction } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
+import { toast } from "sonner"
 
 type ProjectProps = Project & { deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
 export function Project({ projectID, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
@@ -24,14 +25,20 @@ export function Project({ projectID, name, description, codeUrl, playableUrl, de
                     className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
                     onClick={() => {
                         if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
-                            deleteHandler(() => deleteProjectAction(projectID, userId));
+                            deleteHandler(async () => {
+                                await toast.promise(deleteProjectAction(projectID, userId), {
+                                    success: `Deleted ${name}`,
+                                    loading: `Deleting ${name}`,
+                                    error: `Failed to delete ${name}`
+                                });
+                            });
                         }
                     }}>
                     <Icon className="text-white" glyph="delete" size={40} />
                 </button>
             </div>
            <p className="text-md font-medium text-white mx-6">
-                {description}
+                {description.length <= 450 ? description : description.slice(0, 450) + "..."}
             </p>
             <div className="relative w-full flex flex-wrap items-center gap-2">
                 <a href={codeUrl} className="flex flex-row items-center gap-2 w-40 h-8 m-2 rounded-lg bg-[#ffd84d] px-3 py-2 text-md font-bold text-[#1a5e7a] transition-transform hover:scale-105">
