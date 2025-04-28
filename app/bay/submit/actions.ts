@@ -119,14 +119,6 @@ export async function deleteProjectAction(projectID: string, userId: string) {
   }
 }
 
-export async function deleteProject(airtableProjectId: string) {
-  try {
-    return await deleteProject(airtableProjectId);
-  } catch (err) {
-    return err;
-  }
-}
-
 type Data = Record<string, FormDataEntryValue | FormDataEntryValue[]>;
 
 export type EntryData = Record<string, string | number | HackatimeProject[] | string[]>;
