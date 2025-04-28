@@ -28,6 +28,7 @@ export default function Bay() {
       error: () => { reject(); return "Failed to create new project" },
       success: data => {
         resolve(data as FormSave);
+        setIsOpenProjectModal(false); // close project modal
         return "Created new project"
       }
     });
@@ -180,10 +181,10 @@ export default function Bay() {
               </FormSelect>
             <button
               type="submit"
-              className="mt-4 focus:outline-2 px-4 w-24 py-2 bg-indigo-500 hover:bg-indigo-700 hover:underline hover:font-bold rounded text-white self-center"
+              className="md:my-5 my-4 w-full px-3 sm:px-4 mt-4 focus:outline-2 py-2 bg-[#4BC679] rounded text-white self-center transition transform active:scale-95 hover:scale-105 hover:brightness-110"
               disabled={pending}
             >
-              Ship!
+              Create Project
             </button>
           </form>
         </Modal>
