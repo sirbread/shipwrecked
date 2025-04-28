@@ -60,13 +60,16 @@ export default function Modal({
         aria-modal="true"
       >
         <div className={styles.header}>
+          <span className='flex flex-row items-center'>
+          <img src="/bottle.png" className="w-[60px] -rotate-45" />
           <h2 id="modal-title" className={styles.title}>{title}</h2>
-          <button 
+          </span>
+         <button 
             onClick={onClose}
             className={styles.closeButton}
             aria-label="Close modal"
           >
-            ×
+            <img className='w-[40px]' src="/mark-cross.svg" />
           </button>
         </div>
         <div className={styles.content}>
