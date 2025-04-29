@@ -3,15 +3,18 @@ import type { Project } from "@/app/api/projects/route"
 import { deleteProjectAction, editProjectAction } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 import { toast } from "sonner"
+import Modal from "./Modal"
+import { useState } from "react";
 
 const MAX_DESCRIPTION_LENGTH = 330;
 type ProjectProps = Project & { 
     userId: string, 
+    hours: number,
     deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void 
     editHandler?: (project: Project) => void // just toggles the edit modal
-    hours: number
 };
 export function Project({ screenshot, hackatime, submitted, projectID, name, description, codeUrl, playableUrl, deleteHandler, editHandler, userId, hours }: ProjectProps) {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#47D1F6] shadow-lg"
@@ -39,17 +42,7 @@ export function Project({ screenshot, hackatime, submitted, projectID, name, des
                     </button>
                     <button
                         className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
-                        onClick={() => {
-                            if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
-                                deleteHandler(() => new Promise<void>(async (resolve, reject) => {
-                                    toast.promise(deleteProjectAction(projectID, userId), {
-                                        success: () => { resolve(); return `Deleted ${name}`; },
-                                        loading: `Deleting ${name}`,
-                                        error: () => { reject(); return `Failed to delete ${name}. Try again later.`; }
-                                    });
-                                }));
-                            }
-                        }}>
+                        onClick={() => setIsOpen(true)}>
                         <Icon className="text-white" glyph="delete" size={40} />
                     </button>
                 </span>
@@ -67,6 +60,26 @@ export function Project({ screenshot, hackatime, submitted, projectID, name, des
                     Try It!
                 </a>
             </div>
+            <Modal
+                isOpen={isOpen}
+                title={`Do you really want to delete ${name}`}
+                onClose={() => setIsOpen(false)}
+                okText="Cancel"
+            >
+                <button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    onClick={() => {
+                        if (deleteHandler)
+                            deleteHandler(() => new Promise<void>(async (resolve, reject) => {
+                                toast.promise(deleteProjectAction(projectID, userId), {
+                                    success: () => { resolve(); return `Deleted ${name}`; },
+                                    loading: `Deleting ${name}`,
+                                    error: () => { reject(); return `Failed to delete ${name}. Try again later.`; }
+                                });
+                            }));
+
+                    }}>Yes</button>
+            </Modal>
         </div>
     )
 }
