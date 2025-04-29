@@ -71,7 +71,7 @@ export default function Bay() {
     getHackatimeProjects()
       .then((r: any[]) => {
         const formattedProjects: Record<string, string> = {};
-        r.forEach(project => formattedProjects[project.name] = project.name);
+        r.forEach(project => formattedProjects[project.name] = project);
         setHackatimeProjects(formattedProjects);
       });
   }, [isOpenProjectModal]);
@@ -176,7 +176,7 @@ export default function Bay() {
               fieldName='hackatime'
               placeholder='Your Hackatime Projects'
               required
-              values={hackatimeProjects}>
+              values={Object.fromEntries(Object.keys(hackatimeProjects).map(item => [item, item]))}>
                 Your Hackatime Project
               </FormSelect>
             <button
@@ -195,6 +195,7 @@ export default function Bay() {
             <Project
               key={project.projectID}
               deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
+              hours={hackatimeProjects[project.hackatime]["hours" as any]}
               {...project}
             />
           ))}
