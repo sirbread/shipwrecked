@@ -7,6 +7,7 @@ export default function FormSelect({
   required,
   multiple,
   children,
+  defaultValue,
 }: {
   fieldName: string;
   placeholder?: string;
@@ -14,6 +15,7 @@ export default function FormSelect({
   required?: boolean;
   multiple?: boolean;
   children: ReactNode;
+  defaultValue?: string
 }) {
   let selectClasses =
     "w-full px-4 py-2 bg-gray-100 rounded outline-1 outline-gray-200";
@@ -32,6 +34,7 @@ export default function FormSelect({
           name={fieldName}
           multiple={multiple}
           required={required}
+          defaultValue={defaultValue}
         >
           {placeholder && <option value="">{placeholder}</option>}
           {Object.entries(values).map(
