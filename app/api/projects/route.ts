@@ -15,6 +15,8 @@ export type Project = {
     userId: string
 }
 
+export type ProjectType = Project;
+
 export type ProjectInput = Omit<Project, 'projectID' | 'submitted'>
 
 // Helper functions
