@@ -10,6 +10,7 @@ export default function FormInput({
   disabled,
   children,
   value,
+  defaultValue,
   onChange,
 }: {
   fieldName: string;
@@ -20,6 +21,7 @@ export default function FormInput({
   disabled?: boolean;
   children: ReactNode;
   value?: string;
+  defaultValue?: string
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
@@ -52,6 +54,7 @@ export default function FormInput({
           name={fieldName}
           required={required}
           value={value}
+          defaultValue={defaultValue}
           onChange={onChange}
           disabled={disabled}
         />
