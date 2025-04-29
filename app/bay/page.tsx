@@ -3,34 +3,36 @@ import styles from './page.module.css';
 import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
 import { useState, useEffect, useActionState } from 'react';
-import { createProjectAction, FormSave } from './submit/actions';
+import { createProjectAction, FormSave, editProjectAction } from './submit/actions';
 import { Project } from '@/components/common/Project';
 import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
 import { useSession } from 'next-auth/react';
 import { Toaster, toast } from "sonner";
 import ProgressBar from '@/components/common/ProgressBar';
+import type { ProjectType } from '../api/projects/route';
 
 export default function Bay() {
   const { data: session, status } = useSession();
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
-  const [isOpenProjectModal, setIsOpenProjectModal] = useState<boolean>(false);
   const [totalHours, setTotalHours] = useState<number>(0);
+  const [isProjectCreateModalOpen, setIsProjectCreateModalOpen] = useState<boolean>(false);
+  const [isProjectEditModalOpen, setIsProjectEditModalOpen] = useState<boolean>(false);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     setToastMessage(message);
     setToastType(type);
   };
 
-  const [state, formAction, pending] = useActionState((state: FormSave, payload: FormData) => new Promise<FormSave>((resolve, reject) => {
+  const [projectCreateState, projectCreateFormAction, projectCreatePending] = useActionState((state: FormSave, payload: FormData) => new Promise<FormSave>((resolve, reject) => {
     toast.promise(createProjectAction(state, payload), {
       loading: "Creating project...",
       error: () => { reject(); return "Failed to create new project" },
       success: data => {
         resolve(data as FormSave);
-        setIsOpenProjectModal(false); // close project modal
+        setIsProjectCreateModalOpen(false); // close project modal
         return "Created new project"
       }
     });
@@ -47,15 +49,45 @@ export default function Bay() {
     },
   });
 
-  // Update userId when session changes
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      const userId = (session.user as any).id;
-      if (userId && state.data) {
-        state.data.userId = userId;
+  const [initialEditState, setInitialEditState] = useState<any>({
+    name: "",
+    description: "",
+    hackatime: "",
+    codeUrl: "",
+    playableUrl: "",
+    screenshot: "",
+    userId: "",
+    projectID: ""
+  });
+
+  const [projectEditState, projectEditFormAction, projectEditPending] = useActionState((state: FormSave, payload: FormData) => new Promise<FormSave>((resolve, reject) => {
+    toast.promise(editProjectAction(state, payload), {
+      loading: "Editing project...",
+      error: () => { reject(); return "Failed to edit project" },
+      success: data => {
+        resolve(data as FormSave);
+        setIsProjectEditModalOpen(false); // close project modal
+        // delay reloading page 
+        setTimeout(() => {
+          // reload the page to see applied changes
+          location.reload();
+        }, 1500);
+        return "Edited project"
       }
+    });
+  }), {
+    errors: undefined,
+    data: {
+      name: "",
+      description: "",
+      hackatime: "",
+      codeUrl: "",
+      playableUrl: "",
+      screenshot: "",
+      userId: "",
+      projectID: ""
     }
-  }, [session, status]);
+  });
 
   const [projects, setProjects] = useState([]);
   const [hackatimeProjects, setHackatimeProjects] = useState<Record<string, string>>({});
@@ -76,7 +108,7 @@ export default function Bay() {
         r.forEach(project => formattedProjects[project.name] = project);
         setHackatimeProjects(formattedProjects);
       });
-  }, [isOpenProjectModal]);
+  }, [isProjectCreateModalOpen]);
 
   async function getUserProjects() {
     const response = await fetch("/api/projects");
@@ -132,7 +164,7 @@ export default function Bay() {
         <div className={styles.actions}>
           <button 
             className={styles.modalButton}
-            onClick={() => setIsOpenProjectModal(true)}
+            onClick={() => setIsProjectCreateModalOpen(true)}
           >
             Add Project
           </button>
@@ -147,16 +179,16 @@ export default function Bay() {
         </div>
 
         <Modal
-          isOpen={isOpenProjectModal}
-          onClose={() => setIsOpenProjectModal(false)}
+          isOpen={isProjectCreateModalOpen}
+          onClose={() => setIsProjectCreateModalOpen(false)}
           title="Create a new project"
           okText="Done"
         >
-          <form action={formAction}>
+          <form action={projectCreateFormAction}>
             <FormInput
               fieldName='name'
               placeholder='Project Name'
-              state={state}
+              state={projectCreateState}
               required
             >
               Project Name
@@ -164,7 +196,7 @@ export default function Bay() {
             <FormInput
               fieldName='description'
               placeholder='Description'
-              state={state}
+              state={projectCreateState}
               required
             >
               Description
@@ -172,7 +204,7 @@ export default function Bay() {
             <FormInput
               fieldName='codeUrl'
               placeholder='Code URL'
-              state={state}
+              state={projectCreateState}
               required
             >
               Code URL
@@ -180,14 +212,14 @@ export default function Bay() {
             <FormInput
               fieldName='playableUrl'
               placeholder='Playable URL (optional)'
-              state={state}
+              state={projectCreateState}
             >
               Playable URL (optional)
             </FormInput>
             <FormInput
               fieldName='screenshot'
               placeholder='Screenshot URL (optional)'
-              state={state}
+              state={projectCreateState}
             >
               Screenshot URL (optional)
             </FormInput>
@@ -201,7 +233,7 @@ export default function Bay() {
             <button
               type="submit"
               className="md:my-5 my-4 w-full px-3 sm:px-4 mt-4 focus:outline-2 py-2 bg-[#4BC679] rounded text-white self-center transition transform active:scale-95 hover:scale-105 hover:brightness-110"
-              disabled={pending}
+              disabled={projectCreatePending}
             >
               Create Project
             </button>
