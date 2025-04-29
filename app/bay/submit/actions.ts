@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { createProject, deleteProject } from "@/lib/project";
+import { createProject, deleteProject, updateProject } from "@/lib/project";
 import { auth } from "@/lib/auth";
 import { fetchHackatimeProjects } from "@/lib/hackatime";
 import { HackatimeProject } from "@/types/hackatime";
@@ -117,6 +117,46 @@ export async function deleteProjectAction(projectID: string, userId: string) {
   } catch (err) {
     return err;
   }
+}
+
+export async function editProjectAction(
+  state: FormSave,
+  payload: FormData
+): Promise<FormSave> {
+  const data: any = {};
+  payload.entries().forEach(([key, value]) => (data[key] = value));
+
+  // projectID is required for editing
+  const { projectID, ...rest } = data;
+
+  const validated = await projectSchema.safeParseAsync(rest);
+  if (!validated.success) {
+    const errors = validated.error.flatten().fieldErrors;
+    return {
+      errors,
+      data: undefined,
+    };
+  }
+
+  const session = await auth();
+  if (!session?.user) {
+    return {
+      errors: { auth: ["Not authenticated"] },
+      data: undefined,
+    };
+  }
+
+  await updateProject(projectID, session.user.id, {
+    ...validated.data,
+    playableUrl: validated.data.playableUrl || "",
+    screenshot: validated.data.screenshot || "",
+    description: validated.data.description || "",
+  });
+
+  return {
+    errors: undefined,
+    data,
+  };
 }
 
 type Data = Record<string, FormDataEntryValue | FormDataEntryValue[]>;
