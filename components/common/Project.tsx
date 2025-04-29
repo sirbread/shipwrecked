@@ -5,8 +5,12 @@ import Icon from "@hackclub/icons"
 import { toast } from "sonner"
 
 const MAX_DESCRIPTION_LENGTH = 330;
-type ProjectProps = Project & { userId: string, deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void };
-export function Project({ projectID, name, description, codeUrl, playableUrl, deleteHandler, userId }: ProjectProps) {
+type ProjectProps = Project & { 
+    userId: string, deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void 
+    hours: number,
+};
+export function Project({ projectID, hackatime, name, description, codeUrl, playableUrl, deleteHandler, userId, hours }: ProjectProps) {
+    console.log(name, hackatime, hours);
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#47D1F6] shadow-lg"
@@ -18,9 +22,10 @@ export function Project({ projectID, name, description, codeUrl, playableUrl, de
                 }}
             />
             <div className="flex flex-row items-center justify-between">
-                <h2 className="flex flex-row items-center font-sans text-3xl font-extrabold uppercase tracking-wider text-white">
+                <h2 className="flex flex-row items-center font-sans text-2xl font-extrabold uppercase tracking-wider text-white">
                     <Icon glyph="explore" size={50} />
                     {name}
+                    {" "} — {hours} hrs
                 </h2>
                 <button 
                     className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
