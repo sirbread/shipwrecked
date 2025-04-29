@@ -41,13 +41,13 @@ export function Project({ screenshot, hackatime, submitted, projectID, name, des
                         className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
                         onClick={() => {
                             if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
-                                deleteHandler(async () => {
-                                    await toast.promise(deleteProjectAction(projectID, userId), {
-                                        success: `Deleted ${name}`,
+                                deleteHandler(() => new Promise<void>(async (resolve, reject) => {
+                                    toast.promise(deleteProjectAction(projectID, userId), {
+                                        success: () => { resolve(); return `Deleted ${name}`; },
                                         loading: `Deleting ${name}`,
-                                        error: `Failed to delete ${name}`
+                                        error: () => { reject(); return `Failed to delete ${name}. Try again later.`; }
                                     });
-                                });
+                                }));
                             }
                         }}>
                         <Icon className="text-white" glyph="delete" size={40} />
