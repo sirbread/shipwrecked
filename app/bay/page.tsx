@@ -9,6 +9,7 @@ import FormSelect from '@/components/form/FormSelect';
 import FormInput from '@/components/form/FormInput';
 import { useSession } from 'next-auth/react';
 import { Toaster, toast } from "sonner";
+import ProgressBar from '@/components/common/ProgressBar';
 
 export default function Bay() {
   const { data: session, status } = useSession();
@@ -16,6 +17,7 @@ export default function Bay() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info' | 'warning'>('info');
   const [isOpenProjectModal, setIsOpenProjectModal] = useState<boolean>(false);
+  const [totalHours, setTotalHours] = useState<number>(0);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     setToastMessage(message);
@@ -79,8 +81,16 @@ export default function Bay() {
   async function getUserProjects() {
     const response = await fetch("/api/projects");
     const data = await response.json();
+
+   
     setProjects(data);
   }
+
+  useEffect(() => {
+    // set total hours spent on projects
+    const tHours = projects.map((p: any) => hackatimeProjects[p.hackatime]["hours" as any]).reduce((acc, curr) => acc + parseInt(curr), 0);
+    setTotalHours(tHours);
+  }, [hackatimeProjects, projects]);
 
   useEffect(() => {
     getUserProjects();
@@ -108,6 +118,15 @@ export default function Bay() {
             <span className={styles.statLabel}>Ships in Port — </span>
             <span className={styles.statValue}>0</span>
           </div>
+        </div>
+
+        <div className="w-60">
+          <span className="flex flex-row items-center gap-2 text-2xl">
+            🧑‍💻
+            <ProgressBar value={totalHours} max={60} />
+            🏝️
+          </span>
+          <h3>{totalHours}/60 - {60 - totalHours} more hours to go!</h3>
         </div>
 
         <div className={styles.actions}>
