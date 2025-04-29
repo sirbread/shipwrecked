@@ -1,16 +1,17 @@
 'use client'
 import type { Project } from "@/app/api/projects/route"
-import { deleteProjectAction } from "@/app/bay/submit/actions"
+import { deleteProjectAction, editProjectAction } from "@/app/bay/submit/actions"
 import Icon from "@hackclub/icons"
 import { toast } from "sonner"
 
 const MAX_DESCRIPTION_LENGTH = 330;
 type ProjectProps = Project & { 
-    userId: string, deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void 
-    hours: number,
+    userId: string, 
+    deleteHandler?: (cb: (projectID: string, userId: string) => Promise<unknown>) => void 
+    editHandler?: (project: Project) => void // just toggles the edit modal
+    hours: number
 };
-export function Project({ projectID, hackatime, name, description, codeUrl, playableUrl, deleteHandler, userId, hours }: ProjectProps) {
-    console.log(name, hackatime, hours);
+export function Project({ screenshot, hackatime, submitted, projectID, name, description, codeUrl, playableUrl, deleteHandler, editHandler, userId, hours }: ProjectProps) {
     return (
         <div
             className="p-4 rounded-xl relative w-full max-w-md overflow-hidden border-0 bg-[#47D1F6] shadow-lg"
@@ -27,21 +28,31 @@ export function Project({ projectID, hackatime, name, description, codeUrl, play
                     {name}
                     {" "} — {hours} hrs
                 </h2>
-                <button 
-                    className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
-                    onClick={() => {
-                        if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
-                            deleteHandler(async () => {
-                                await toast.promise(deleteProjectAction(projectID, userId), {
-                                    success: `Deleted ${name}`,
-                                    loading: `Deleting ${name}`,
-                                    error: `Failed to delete ${name}`
+                <span className="flex flex-row gap-1">
+                    <button
+                        className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-[#3B2715]"
+                        onClick={() => {
+                            // trigger edit operation for the project
+                            if (editHandler) editHandler({ name, description, codeUrl, playableUrl, screenshot, hackatime, userId, projectID, submitted });
+                        }}>
+                        <Icon className="text-white" glyph="edit" size={40} />
+                    </button>
+                    <button
+                        className="p-1 rounded-xl transition duration-200 ease-in-out transform hover:scale-105 hover:rotate-6 active:scale-90 bg-red-500"
+                        onClick={() => {
+                            if (confirm("Are you sure you want to delete this project?") && deleteHandler) {
+                                deleteHandler(async () => {
+                                    await toast.promise(deleteProjectAction(projectID, userId), {
+                                        success: `Deleted ${name}`,
+                                        loading: `Deleting ${name}`,
+                                        error: `Failed to delete ${name}`
+                                    });
                                 });
-                            });
-                        }
-                    }}>
-                    <Icon className="text-white" glyph="delete" size={40} />
-                </button>
+                            }
+                        }}>
+                        <Icon className="text-white" glyph="delete" size={40} />
+                    </button>
+                </span>
             </div>
            <p className="text-md font-medium text-white mx-6">
                 {description.length <= MAX_DESCRIPTION_LENGTH ? description : description.slice(0, MAX_DESCRIPTION_LENGTH) + "..."} 
