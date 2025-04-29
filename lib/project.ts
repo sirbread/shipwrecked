@@ -13,6 +13,7 @@ export type Project = {
 }
 
 export type ProjectInput = Omit<Project, 'projectID' | 'submitted'>
+export type ProjectUpdateInput = Partial<Omit<Project, 'projectID' | 'userId' | 'submitted'>>;
 
 export async function createProject(data: ProjectInput) {
     return prisma.project.create({
@@ -38,5 +39,17 @@ export async function deleteProject(projectID: string, userId: string) {
                 userId
             }
         }
+    });
+} 
+
+export async function updateProject(projectID: string, userId: string, data: ProjectUpdateInput) {
+    return prisma.project.update({
+        where: {
+            projectID_userId: {
+                projectID,
+                userId
+            }
+        },
+        data
     });
 } 
