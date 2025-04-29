@@ -178,67 +178,28 @@ export default function Bay() {
           </a>
         </div>
 
-        <Modal
+        {/* Modal to create new project */}
+        <ProjectModal
           isOpen={isProjectCreateModalOpen}
-          onClose={() => setIsProjectCreateModalOpen(false)}
-          title="Create a new project"
-          okText="Done"
-        >
-          <form action={projectCreateFormAction}>
-            <FormInput
-              fieldName='name'
-              placeholder='Project Name'
-              state={projectCreateState}
-              required
-            >
-              Project Name
-            </FormInput>
-            <FormInput
-              fieldName='description'
-              placeholder='Description'
-              state={projectCreateState}
-              required
-            >
-              Description
-            </FormInput>
-            <FormInput
-              fieldName='codeUrl'
-              placeholder='Code URL'
-              state={projectCreateState}
-              required
-            >
-              Code URL
-            </FormInput>
-            <FormInput
-              fieldName='playableUrl'
-              placeholder='Playable URL (optional)'
-              state={projectCreateState}
-            >
-              Playable URL (optional)
-            </FormInput>
-            <FormInput
-              fieldName='screenshot'
-              placeholder='Screenshot URL (optional)'
-              state={projectCreateState}
-            >
-              Screenshot URL (optional)
-            </FormInput>
-            <FormSelect 
-              fieldName='hackatime'
-              placeholder='Your Hackatime Projects'
-              required
-              values={Object.fromEntries(Object.keys(hackatimeProjects).map(item => [item, item]))}>
-                Your Hackatime Project
-              </FormSelect>
-            <button
-              type="submit"
-              className="md:my-5 my-4 w-full px-3 sm:px-4 mt-4 focus:outline-2 py-2 bg-[#4BC679] rounded text-white self-center transition transform active:scale-95 hover:scale-105 hover:brightness-110"
-              disabled={projectCreatePending}
-            >
-              Create Project
-            </button>
-          </form>
-        </Modal>
+          setIsOpen={setIsProjectCreateModalOpen}
+          formAction={projectCreateFormAction}
+          state={projectCreateState}
+          pending={projectCreatePending}
+          hackatimeProjects={hackatimeProjects}
+          modalTitle='Create New Project!'
+         /> 
+
+        <ProjectModal
+          isOpen={isProjectEditModalOpen}
+          setIsOpen={setIsProjectEditModalOpen}
+          formAction={projectEditFormAction}
+          state={projectEditState}
+          pending={projectEditPending}
+          hackatimeProjects={hackatimeProjects}
+          modalTitle='Edit Project!'
+          {...initialEditState}
+         /> 
+
 
         <h1 className={`${styles.title} my-4`}>Your Projects</h1>
         <div className="grid grid-cols-3 gap-3 my-4">
@@ -247,6 +208,7 @@ export default function Bay() {
               key={project.projectID}
               deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
               hours={hackatimeProjects[project.hackatime]["hours" as any]}
+              editHandler={(project) => { setIsProjectEditModalOpen(!isProjectEditModalOpen); setInitialEditState(project); }}
               {...project}
             />
           ))}
@@ -264,3 +226,97 @@ export default function Bay() {
     </div>
   );
 } 
+
+type ProjectModalProps = Partial<ProjectType> & { 
+  isOpen: boolean,
+  setIsOpen: (isOpen: boolean) => void,
+  formAction: (payload: FormData) => void, // we both know this is a function
+  state: FormSave,
+  pending: boolean,
+  hackatimeProjects: Record<string, string>
+  modalTitle: string
+}
+
+function ProjectModal(props: ProjectModalProps) {
+  return <>
+    <Modal
+          isOpen={props.isOpen}
+          onClose={() => props.setIsOpen(false)}
+          title={props.modalTitle}
+          okText="Done"
+        >
+          <form action={props.formAction}>
+              <span className="invisible h-0 w-0 overflow-hidden [&_*]:invisible [&_*]:h-0 [&_*]:w-0 [&_*]:overflow-hidden">
+            <FormInput
+              fieldName='projectID'
+              state={props.state}
+              placeholder='projectID'
+              required
+              {...(props.projectID && { defaultValue: props.projectID})}
+            >
+              {""}
+            </FormInput>
+              </span>
+            <FormInput
+              fieldName='name'
+              placeholder='Project Name'
+              state={props.state}
+              required
+              {...(props.name && { defaultValue: props.name})}
+            >
+              Project Name
+            </FormInput>
+            <FormInput
+              fieldName='description'
+              placeholder='Description'
+              state={props.state}
+              {...(props.description && { defaultValue: props.description})}
+              required
+            >
+              Description
+            </FormInput>
+            <FormInput
+              fieldName='codeUrl'
+              placeholder='Code URL'
+              state={props.state}
+              required
+              {...(props.codeUrl && { defaultValue: props.codeUrl})}
+            >
+              Code URL
+            </FormInput>
+            <FormInput
+              fieldName='playableUrl'
+              placeholder='Playable URL (optional)'
+              state={props.state}
+              {...(props.playableUrl && { defaultValue: props.playableUrl})}
+            >
+              Playable URL (optional)
+            </FormInput>
+            <FormInput
+              fieldName='screenshot'
+              placeholder='Screenshot URL (optional)'
+              state={props.state}
+              {...(props.screenshot && { defaultValue: props.screenshot})}
+            >
+              Screenshot URL (optional)
+            </FormInput>
+            <FormSelect 
+              fieldName='hackatime'
+              placeholder='Your Hackatime Projects'
+              required
+              values={props.hackatimeProjects}
+              {...(props.hackatime && { defaultValue: props.hackatime})}
+              >
+                Your Hackatime Project
+              </FormSelect>
+            <button
+              type="submit"
+              className="md:my-5 my-4 w-full px-3 sm:px-4 mt-4 focus:outline-2 py-2 bg-[#4BC679] rounded text-white self-center transition transform active:scale-95 hover:scale-105 hover:brightness-110"
+              disabled={props.pending}
+            >
+              Submit!
+            </button>
+          </form>
+        </Modal>
+  </>
+}
