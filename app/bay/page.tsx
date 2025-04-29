@@ -108,7 +108,7 @@ export default function Bay() {
         r.forEach(project => formattedProjects[project.name] = project);
         setHackatimeProjects(formattedProjects);
       });
-  }, [isProjectCreateModalOpen]);
+  }, [isProjectCreateModalOpen, isProjectEditModalOpen]);
 
   async function getUserProjects() {
     const response = await fetch("/api/projects");
@@ -185,7 +185,7 @@ export default function Bay() {
           formAction={projectCreateFormAction}
           state={projectCreateState}
           pending={projectCreatePending}
-          hackatimeProjects={hackatimeProjects}
+          hackatimeProjects={Object.fromEntries(Object.keys(hackatimeProjects).map(item => [item, item]))}
           modalTitle='Create New Project!'
          /> 
 
@@ -195,7 +195,7 @@ export default function Bay() {
           formAction={projectEditFormAction}
           state={projectEditState}
           pending={projectEditPending}
-          hackatimeProjects={hackatimeProjects}
+          hackatimeProjects={Object.fromEntries(Object.keys(hackatimeProjects).map(item => [item, item]))}
           modalTitle='Edit Project!'
           {...initialEditState}
          /> 
