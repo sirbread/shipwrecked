@@ -44,6 +44,9 @@ export const opts: NextAuthOptions = {
       const user = await prisma.user.findFirst({ where: { email: session.user!.email as string }});
       if (!user) return session;
       return { user: { ...session.user, id: user.id }, expires: session.expires };
+    },
+    async redirect({ url, baseUrl }) {
+      return `${baseUrl}/bay`;
     }
   }
   // debug: true
