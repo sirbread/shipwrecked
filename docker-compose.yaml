@@ -12,8 +12,6 @@ services:
     environment:
       - SERVICE_FQDN_APP_9991
       - NODE_ENV=production
-      - AUTH_USERNAME=${AUTH_USERNAME}
-      - AUTH_PASSWORD=${AUTH_PASSWORD}
     deploy:
       resources:
         limits:
