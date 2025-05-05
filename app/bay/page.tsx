@@ -251,7 +251,6 @@ function ProjectModal(props: ProjectModalProps) {
               fieldName='projectID'
               state={props.state}
               placeholder='projectID'
-              required
               {...(props.projectID && { defaultValue: props.projectID})}
             >
               {""}
