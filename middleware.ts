@@ -37,6 +37,7 @@ export function middleware(request: NextRequest) {
   const decoded = buffer.toString('ascii');
   const [username, password] = decoded.split(':');
 
+  // Check credentials
   if (
     username !== process.env.AUTH_USERNAME ||
     password !== process.env.AUTH_PASSWORD
