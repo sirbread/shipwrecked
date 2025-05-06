@@ -119,6 +119,7 @@ export default function Bay() {
   }
 
   useEffect(() => {
+    if (Object.keys(hackatimeProjects).length === 0 || projects.length === 0) return;
     // set total hours spent on projects
     const tHours = projects.map((p: any) => hackatimeProjects[p.hackatime]["hours" as any]).reduce((acc, curr) => acc + parseInt(curr), 0);
     setTotalHours(tHours);
@@ -207,7 +208,7 @@ export default function Bay() {
             <Project
               key={project.projectID}
               deleteHandler={deleteProjectId(0, project.projectID, project.userId)}
-              hours={hackatimeProjects[project.hackatime]["hours" as any]}
+              hours={hackatimeProjects.hasOwnProperty(project.hackatime) ? hackatimeProjects[project.hackatime]["hours" as any] : 0}
               editHandler={(project) => { setIsProjectEditModalOpen(!isProjectEditModalOpen); setInitialEditState(project); }}
               {...project}
             />
