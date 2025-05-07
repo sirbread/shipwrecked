@@ -26,20 +26,6 @@ const adapter = {
   },
 }
 
-async function hasSlackAccount(email: string) {
-  // find the first slack user account with the same email
-  const userSlackAcct = await prisma.account.findFirst({
-    where: {
-      provider: 'slack',
-      user: { email }
-    },
-    select: {
-      providerAccountId: true
-    }
-  });
-  return { slackId: userSlackAcct !== null ? userSlackAcct.providerAccountId : null };
-}
-
 export const opts: NextAuthOptions = {
   adapter: adapter,
   providers: [
@@ -57,7 +43,7 @@ export const opts: NextAuthOptions = {
     async session({ session }) {
       const user = await prisma.user.findFirst({ where: { email: session.user!.email as string }});
       if (!user) return session;
-      const { slackId } = await hasSlackAccount(session.user!.email as string);
+      const slackId = await prisma.user.slack(session.user!.email as string);
       return { user: { ...session.user, id: user.id, slack: slackId }, expires: session.expires };
     },
     async signIn({ user, account, profile, email, credentials }) {
