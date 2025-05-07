@@ -84,3 +84,9 @@ REDIS_URL=redis://localhost:6379
   1. Ensure your changes are tested on staging
   2. Run `./upgrade-prod.sh` to promote the changes to production
   3. The script will perform necessary checks and guide you through the process
+
+## Applying Prisma Migrations
+In order to apply schema changes to the staging/production database run
+```
+DATABASE_URL="your-production-database-url" yarn prisma migrate deploy
+```
