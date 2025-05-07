@@ -97,7 +97,7 @@ export default function Bay() {
   }
 
   async function getHackatimeProjects() {
-    const response = await fetch("/api/projects?hackatime=true&slackID=U01PJ08PR7S");
+    const response = await fetch(`/api/projects?hackatime=true&slackID=${session.user.slack}`);
     return await response.json();
   }
 

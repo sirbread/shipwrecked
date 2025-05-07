@@ -28,5 +28,8 @@ done
 
 echo "Services are ready! Starting Next.js development server..."
 
+# Upload schema changes to the database first
+yarn prisma db push
+
 # Run the Next.js development server
 yarn dev 
