@@ -14,6 +14,20 @@ import type { ProjectType } from '../api/projects/route';
 import { useRouter } from 'next/navigation';
 import type { HackatimeProject } from "@/types/hackatime";
 
+function Loading() {
+  return (
+    <div className="fixed inset-0 bg-[url(/bay.webp)] bg-cover bg-center">
+      <div className="relative flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-5xl md:text-6xl font-serif mb-6 text-white font-bold">
+            Loading...
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AccessDeniedHaiku() {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
@@ -234,7 +248,7 @@ export default function Bay() {
     getUserProjects();
   }, []);
 
-  if (status === "loading") return <>Loading...</>
+  if (status === "loading") return <Loading />
   if (status === "unauthenticated") {
     return <AccessDeniedHaiku />;
   }
