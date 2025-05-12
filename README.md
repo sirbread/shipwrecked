@@ -73,3 +73,28 @@ That's it! Your development environment will be running and accessible at http:/
 ### Production Environment
 - Production is deployed at https://shipwrecked.hackclub.com
 - To deploy to production, run `./upgrade-prod.sh` after testing on staging
+
+## Contributing Guidelines
+
+When contributing to this project, please follow these guidelines to ensure a smooth review process and maintain project stability:
+
+### Pull Request Best Practices
+
+1. **For Large Refactors**: If you're making significant changes to a page or component, take an additive approach:
+   - Create a new page/component alongside the existing one
+   - Don't modify the original until your changes are approved
+   - This allows for safe, non-destructive changes
+
+2. **Before Major Changes**: Check with the internal team before starting work on:
+   - Large-scale refactors
+   - Major UI/UX changes
+   - New features that affect core functionality
+   
+3. **Cross-Device Testing**: We prioritize stability across platforms:
+   - All changes must be tested on both desktop and mobile
+   - Verify responsive behavior works correctly at different breakpoints
+   - Document any device-specific considerations in your PR
+
+4. **Code Style**: Follow the existing patterns in the codebase for consistency
+
+By following these guidelines, you'll help us maintain a stable, high-quality codebase that works well for all users.
