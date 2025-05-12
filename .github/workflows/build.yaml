@@ -30,4 +30,5 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
+          GRAPHITE_HOST:  ${{ secrets.GRAPHITE_HOST }}
         run: yarn build
