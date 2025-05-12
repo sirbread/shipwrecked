@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { headers } from 'next/headers';
 import { z as zod } from "zod";
+import metrics from "@/metrics";
 
 // The form schema for extra validation
 const schema = z.object({
@@ -172,10 +173,12 @@ export async function save(state: FormSave, payload: FormData): Promise<FormSave
         try {
             console.log('Creating Airtable record...');
             // Create airtable record
+            metrics.increment("success.rsvp_save", 1);
             await createRecord("RSVPs", newEntry)
             console.log('Airtable record created successfully');
         } catch (error) {
             console.error("Error creating record in RSVPs:", error);
+            metrics.increment("errors.rsvp_save", 1);
             return {
                 errors: { _form: ["Unable to save your RSVP. Please try again later."] },
                 data: undefined,
@@ -184,12 +187,14 @@ export async function save(state: FormSave, payload: FormData): Promise<FormSave
         }
 
         console.log('=== RSVP Form Submission Success ===');
+        metrics.increment("success.rsvp_form", 1);
         return {
             errors: undefined,
             data: newEntry,
             valid: true
         };
     } catch (error) {
+        metrics.increment("errors.rsvp_form", 1);
         console.error("Unexpected error in form submission:", error);
         return {
             errors: { _form: ["An unexpected error occurred. Please try again later."] },
