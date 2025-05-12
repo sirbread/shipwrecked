@@ -15,9 +15,11 @@ if (!global.statsServiceInitialized) {
   // Mark as initialized globally so it persists across hot reloads
   global.statsServiceInitialized = true;
   
-  // Start the service
+  // Start the service and throw any errors that occur
   startStatsService().catch(error => {
     console.error('Failed to start stats service:', error);
+    // Rethrow the error to bubble it up
+    throw error;
   });
 } else {
   console.log('Stats service already initialized, skipping to prevent duplicate instances');  

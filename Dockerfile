@@ -5,6 +5,7 @@ COPY . .
 RUN yarn install --frozen-lockfile
 ENV AIRTABLE_API_KEY=testing
 ENV HACKATIME_API_TOKEN=testing
+ENV GRAPHITE_HOST=localhost
 RUN yarn build
 
 # Production stage
