@@ -12,7 +12,7 @@ if (graphite == null) {
 const options = {
   host: graphite,
   port: 8125,
-  prefix: `${environment}.slashz.`,
+  prefix: `${environment}.shipwrecked.`,
 }
 const metrics = StatsD(options);
 
