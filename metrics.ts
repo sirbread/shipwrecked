@@ -1,5 +1,7 @@
 import { StatsD } from "node-statsd";
+import { config } from "dotenv";
 
+config(); // load environment variables
 const environment = process.env.NODE_ENV
 const graphite = process.env.GRAPHITE_HOST
 
