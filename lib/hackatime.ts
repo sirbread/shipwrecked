@@ -1,5 +1,6 @@
 import { HacaktimeMostRecentHeartbeat, HackatimeProject, HackatimeStatsProject } from "@/types/hackatime";
 import { prisma } from "@/lib/prisma";
+import metrics from "@/metrics";
 
 if (!process.env.HACKATIME_API_TOKEN) {
   throw new Error('HACKATIME_API_TOKEN environment variable must be set');
@@ -44,10 +45,12 @@ export async function fetchHackatimeProjects(
     //   console.log(`📊 Project names:`, data.data.projects.map(p => p.name).join(', '));
     // }
 
+    metrics.increment("success.fetch_hackatime", 1);
     return data.data.projects;
   } catch (error) {
     console.error(`💥 Error fetching Hackatime projects:`, error);
     console.error(`For user ID: ${hackatimeUserId}`);
+    metrics.increment("errors.fetch_hackatime", 1);
     throw error; // Re-throw to handle in calling code
   }
 }
@@ -90,15 +93,18 @@ export async function lookupHackatimeIdByEmail(email: string): Promise<string | 
     }
     
     if (!response.ok) {
+      metrics.increment("errors.hackatime_api_error", 1);
       console.error(`❌ Hackatime API error: ${response.status} ${response.statusText}`);
       throw new Error(`Hackatime API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    metrics.increment("success.hackatime_by_email", 1);
     console.log('📦 Full Hackatime response:', JSON.stringify(data, null, 2));
     console.log(`✅ Found Hackatime ID: ${data.user_id}`);
     return data.user_id as string;
   } catch (error) {
+    metrics.increment("errors.hackatime_by_email", 1);
     console.error(`💥 Error looking up Hackatime ID by email:`, error);
     throw error;
   }
@@ -118,15 +124,18 @@ export async function lookupHackatimeIdBySlack(slackId: string): Promise<string 
     }
     
     if (!response.ok) {
+      metrics.increment("errors.hackatime_api_error", 1);
       console.error(`❌ Hackatime API error: ${response.status} ${response.statusText}`);
       throw new Error(`Hackatime API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    metrics.increment("success.hackatime_by_email", 1);
     console.log('📦 Full Hackatime response:', JSON.stringify(data, null, 2));
     console.log(`✅ Found Hackatime ID: ${data.user_id}`);
     return data.user_id as string;
   } catch (error) {
+    metrics.increment("errors.hackatime_by_email", 1);
     console.error(`💥 Error looking up Hackatime ID by Slack ID:`, error);
     throw error;
   }
@@ -197,9 +206,11 @@ export async function checkHackatimeSetup(userId: string, userEmail: string): Pr
       return { isSetup: true };
     }
 
+    metrics.increment("errors.get_hackatime_id", 1);
     console.log('❌ No Hackatime ID found through any method');
     return { isSetup: false };
   } catch (error) {
+    metrics.increment("errors.hackatime_status", 1);
     console.error('💥 Error checking Hackatime status:', error);
     return { isSetup: false, error: 'Failed to check Hackatime status' };
   }
