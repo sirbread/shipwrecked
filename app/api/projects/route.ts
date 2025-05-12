@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createProject } from "@/lib/project";
 import { requireUserSession } from "@/lib/requireUserSession";
+import metrics from "@/metrics";
 
 export type Project = {
     projectID: string
@@ -35,9 +36,11 @@ async function deleteProject(projectID: string, userId: string) {
                 }
             }
         });
+        metrics.increment("success.delete_project", 1);
         console.log(`[DELETE] Successfully deleted project ${projectID}`);
         return result;
     } catch (err) {
+        metrics.increment("errors.delete_project", 1);
         console.error(`[DELETE] Failed to delete project ${projectID}:`, err);
         throw err;
     }
@@ -56,9 +59,11 @@ export async function GET(request: Request) {
             }
         });
         console.log(`[GET] Successfully fetched ${projects.length} projects for user ${user.id}`);
+        metrics.increment("success.fetch_project", 1);
         return Response.json(projects);
     } catch (err) {
         console.error("[GET] Error fetching projects:", err);
+        metrics.increment("errors.fetch_project", 1);
         return Response.json({ error: 'Failed to fetch projects' }, { status: 500 });
     }
 }
@@ -103,12 +108,13 @@ export async function POST(request: Request) {
             ...projectData,
             userId: user.id
         });
-        
         console.log(`[POST] Successfully created project ${createdProject.projectID}`);
+        metrics.increment("success.create_project", 1);
         return Response.json({ success: true, data: createdProject });
     } catch (error: unknown) {
         const err = error instanceof Error ? error : new Error(String(error));
         console.error('[POST] Failed to create project:', err);
+        metrics.increment("errors.create_project", 1);
         return Response.json({ 
             success: false, 
             error: err.message,
@@ -156,9 +162,11 @@ export async function DELETE(request: Request) {
             }
         });
         console.log(`[DELETE] Successfully deleted project ${projectID}`);
+        metrics.increment("success.delete_project", 1);
         return Response.json({ success: true });
     } catch (err) {
         console.error('[DELETE] Failed to delete project:', err);
+        metrics.increment("errors.delete_project", 1);
         return Response.json({ 
             success: false, 
             error: err instanceof Error ? err.message : 'Unknown error'
@@ -221,10 +229,12 @@ export async function PUT(request: Request) {
         });
 
         console.log(`[PUT] Successfully updated project ${projectID}`);
+        metrics.increment("success.update_project", 1);
         return Response.json({ success: true, data: updatedProject });
     } catch (error: unknown) {
         const err = error instanceof Error ? error : new Error(String(error));
         console.error('[PUT] Failed to update project:', err);
+        metrics.increment("errors.update_project", 1);
         return Response.json({ 
             success: false, 
             error: err.message,
