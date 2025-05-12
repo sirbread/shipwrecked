@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
 import { createTransport } from "nodemailer";
 import { randomBytes } from "crypto";
-
+import metrics from "@/metrics";
 
 const adapter = {
   ...PrismaAdapter(prisma),
@@ -17,12 +17,18 @@ const adapter = {
     // If this is a Slack account, update the user with their Slack ID
     if (data.provider === 'slack') {
       console.log('Updating user with Slack ID');
-      await prisma.user.update({
-        where: { id: data.userId },
-        data: { 
-          slack: data.providerAccountId  // Slack's user ID
-        }
-      });
+
+      try {
+        await prisma.user.update({
+          where: { id: data.userId },
+          data: {
+            slack: data.providerAccountId  // Slack's user ID
+          }
+        });
+        metrics.increment("success.link_account_id", 1);
+      } catch (err) {
+        metrics.increment("errors.link_account_id", 1);
+      }
     }
 
     const account = await prisma.account.create({
@@ -69,12 +75,13 @@ export const opts: NextAuthOptions = {
         // Customize the verification email
         const { host } = new URL(url);
         const transport = await createTransport(provider.server);
-        await transport.sendMail({
-          to: email,
-          from: provider.from,
-          subject: `Sign in to Shipwrecked`,
-          text: `Click here to sign in to Shipwrecked: ${url}`,
-          html: `
+        try {
+          await transport.sendMail({
+            to: email,
+            from: provider.from,
+            subject: `Sign in to Shipwrecked`,
+            text: `Click here to sign in to Shipwrecked: ${url}`,
+            html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h1 style="color: #47D1F6;">Welcome to Shipwrecked!</h1>
               <p>Click the button below to sign in to your account:</p>
@@ -86,8 +93,12 @@ export const opts: NextAuthOptions = {
               </p>
             </div>
           `,
-        });
-      },
+          });
+          metrics.increment("success.send_auth_email", 1);
+        } catch (err) {
+          metrics.increment("errors.send_auth_email", 1);
+        }
+     },
     })
   ],
   callbacks: {
@@ -111,6 +122,7 @@ export const opts: NextAuthOptions = {
       });
 
       if (!user.email) {
+        metrics.increment("errors.sign_in", 1);
         return false;
       }
 
