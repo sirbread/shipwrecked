@@ -813,10 +813,10 @@ export default function Bay() {
             {isProjectEditModalOpen ? (
               // Edit Form
               <div className={`${styles.editForm} relative`}>
-                <div className="flex justify-between items-center mb-5 border-b pb-3 sticky top-0 bg-white z-10">
+                <div className="flex justify-between items-center border-b sticky pb-2 top-0 bg-white z-10">
                   <h2 className="text-2xl font-bold">Edit Project</h2>
                   <button
-                    className="flex items-center gap-1 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
                     onClick={() => {
                       setIsProjectEditModalOpen(false);
                     }}
@@ -825,7 +825,7 @@ export default function Bay() {
                     <span className="text-xl leading-none">&times;</span>
                   </button>
                 </div>
-                <form action={projectEditFormAction} className="pb-20">
+                <form action={projectEditFormAction} className="overflow-y-scroll max-h-[95%]">
                   <span className="invisible h-0 w-0 overflow-hidden [&_*]:invisible [&_*]:h-0 [&_*]:w-0 [&_*]:overflow-hidden">
                     <FormInput
                       fieldName='projectID'
@@ -988,7 +988,7 @@ export default function Bay() {
                   </div>
                   
                   {/* Fixed position button that stays at the bottom */}
-                  <div className="sticky bottom-0 left-0 right-0 p-4 mt-4 bg-white border-t border-gray-200 z-20">
+                  <div className="sticky bottom-0 left-0 right-0 p-4 p-4 mt-4 bg-white border-t border-gray-200 z-20">
                     <button
                       type="submit"
                       className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition-colors focus:outline-none flex items-center justify-center gap-2"
@@ -1453,7 +1453,7 @@ function ProjectModal(props: ProjectModalProps) {
         okText="Done"
         hideFooter={props.hideFooter || isCreate}
       >
-        <form action={props.formAction} className="pb-16 relative">
+        <form action={props.formAction} className="relative">
           <span className="invisible h-0 w-0 overflow-hidden [&_*]:invisible [&_*]:h-0 [&_*]:w-0 [&_*]:overflow-hidden">
             <FormInput
               fieldName='projectID'
@@ -1572,7 +1572,10 @@ function ProjectModal(props: ProjectModalProps) {
           </div>
           
           {/* Fixed button at bottom of modal */}
-          <div className="sticky bottom-0 left-0 right-0 p-4 mt-4 bg-white border-t border-gray-200 z-10">
+          <div 
+          className="sticky bottom-0 left-0 right-0 p-4 mt-4 bg-white border-t border-gray-200 z-10"
+            style={{ bottom: "-6%"}}
+          >
             <button
               type="submit"
               className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition-colors focus:outline-none flex items-center justify-center gap-2"
