@@ -22,6 +22,15 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Debug Env
+        env:
+          HACKATIME_API_TOKEN: "doesntmatter"
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+        run: |
+          echo "AIRTABLE_API_KEY is ${AIRTABLE_API_KEY:+set}"
+          echo "AIRTABLE_BASE_ID is ${AIRTABLE_BASE_ID:+set}"
+
       - name: Build project
         env:
           HACKATIME_API_TOKEN: "doesntmatter"
