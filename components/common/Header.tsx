@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { createAvatar } from '@dicebear/core';
-import { lorelei } from '@dicebear/collection';
+import { thumbs } from '@dicebear/collection';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -106,7 +106,7 @@ export default function Header({ session, status }: HeaderProps) {
                 {status === "authenticated" && (
                     <>
                         <img
-                            src={session?.user.image ? session.user.image : createAvatar(lorelei, { seed: session?.user.email ?? "" }).toDataUri()}
+                            src={session?.user.image ? session.user.image : createAvatar(thumbs, { seed: session?.user.email ?? "" }).toDataUri()}
                             alt={session?.user.email!}
                             className="w-10 h-10 rounded-full border-2 border-white shadow"
                         />
