@@ -18,6 +18,7 @@ import Tooltip from '../components/common/Tooltip';
 import Link from 'next/link';
 import Header from '@/components/common/Header';
 import ProjectStatus from '../components/common/ProjectStatus';
+import { useIsMobile } from '@/lib/hooks';
 
 function Loading() {
   return (
@@ -288,9 +289,9 @@ export default function Bay() {
   const [projectHours, setProjectHours] = useState<Record<string, number>>({});
   const [isLoadingHackatime, setIsLoadingHackatime] = useState(true);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState<boolean>(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectType | null>(null);
+  const isMobile = useIsMobile();
 
   // Load Hackatime projects once when component mounts or user changes
   useEffect(() => {
@@ -503,16 +504,6 @@ export default function Bay() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProjectId, isProjectEditModalOpen, isProjectCreateModalOpen, projects, isMobile]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    // Call the handler right away to set the initial value
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // This useEffect watches for changes to selectedProjectId and initialEditState
   // and ensures the project edit form fields are properly synchronized

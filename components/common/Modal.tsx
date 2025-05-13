@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import styles from './Modal.module.css';
+import { useIsMobile } from '@/lib/hooks';
 
 interface ModalProps {
   isOpen: boolean;
@@ -23,6 +24,9 @@ export default function Modal({
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  
+  const isMobile = useIsMobile();
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -31,12 +35,12 @@ export default function Modal({
     
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      if (isMobile) document.body.style.overflow = 'hidden'; // Prevent background scrolling
     }
     
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      if (isMobile) document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 

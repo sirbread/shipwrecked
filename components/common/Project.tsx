@@ -3,6 +3,7 @@ import type { Project } from "@/app/api/projects/route"
 import Icon from "@hackclub/icons"
 import { toast } from "sonner"
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/lib/hooks";
 
 type ProjectProps = Project & { 
     userId: string, 
@@ -12,20 +13,9 @@ type ProjectProps = Project & {
 };
 
 export function Project({ name, description, codeUrl, playableUrl, screenshot, hackatime, submitted, projectID, editHandler, userId, hours, selected, viral, shipped, in_review, approved }: ProjectProps) {
-    const [isMobile, setIsMobile] = useState<boolean>(false);
-    
     // Detect mobile screen size
-    useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-    
+    const isMobile = useIsMobile();
+
     const handleRowClick = (e: React.MouseEvent) => {
         if (editHandler) {
             editHandler({ 
