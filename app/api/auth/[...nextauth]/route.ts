@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { NextAuthOptions } from "next-auth";
 import { randomBytes } from "crypto";
 import metrics from "@/metrics";
-import { sendEmailWithLoops } from "@/lib/loops";
+import { sendAuthEmail, sendNotificationEmail } from "@/lib/loops";
 
 const adapter = {
   ...PrismaAdapter(prisma),
@@ -75,7 +75,7 @@ export const opts: NextAuthOptions = {
         // Customize the verification email
         const { host } = new URL(url);
         try {
-          await sendEmailWithLoops(host, email, url);
+          await sendAuthEmail(email, host, url);
           metrics.increment("success.send_auth_email", 1);
         } catch (err) {
           metrics.increment("errors.send_auth_email", 1);
