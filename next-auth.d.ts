@@ -10,6 +10,7 @@ declare module "next-auth" {
             image?: string | null;
             slack?: string | null;
             hackatimeId?: string | null;
+            isAdmin?: boolean
         },
         expires: string
     }
@@ -18,5 +19,6 @@ declare module "next-auth" {
     interface User extends DefaultUser {
         slack?: string | null;
         hackatimeId?: string | null;
+        isAdmin?: boolean
     }
 }
