@@ -25,6 +25,8 @@ jobs:
       - name: Build project
         env:
           HACKATIME_API_TOKEN: "doesntmatter"
+          LOOPS_TRANSACTIONAL_SIGNIN_EMAIL_ID: "notimportant"
+          LOOPS_TRANSACTIONAL_NOTIFICATION_EMAIL_ID: "notimportant"
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
