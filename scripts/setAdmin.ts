@@ -11,6 +11,7 @@ async function setAdmin(email: string) {
     console.error("Error setting user as admin:", error);
   } finally {
     await prisma.$disconnect();
+    process.exit(0);
   }
 }
 
