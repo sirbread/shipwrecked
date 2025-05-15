@@ -1,12 +1,4 @@
 import Airtable from 'airtable';
-import mockAirtable from "@/__mocks__/airtable";
-import { config } from "dotenv";
-
-// load environment variables
-config();
-
-const isMock = process.env.NODE_ENV === "development";
-console.log("isMock", isMock);
 
 // Initialize Airtable with your API key
 const base = new Airtable({
