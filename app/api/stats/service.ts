@@ -1,6 +1,7 @@
-import { getRecordCount } from '@/lib/airtable';
+import { airtableApi } from '@/lib/airtable';
 import { setCount, getCount } from './store';
 import metrics from '@/metrics';
+const { getRecordCount } = airtableApi;
 
 // Global variable to track if service is running
 let isServiceRunning = false;

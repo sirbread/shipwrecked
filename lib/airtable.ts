@@ -1,4 +1,12 @@
 import Airtable from 'airtable';
+import mockAirtable from "@/__mocks__/airtable";
+import { config } from "dotenv";
+
+// load environment variables
+config();
+
+const isMock = process.env.NODE_ENV === "development";
+console.log("isMock", isMock);
 
 // Initialize Airtable with your API key
 const base = new Airtable({
@@ -13,7 +21,7 @@ export interface AirtableRecord {
 }
 
 // Generic function to fetch records from a table
-export async function getRecords(tableName: string, options?: {
+async function getRecords(tableName: string, options?: {
   filterByFormula?: string;
   sort?: { field: string; direction: 'asc' | 'desc' }[];
   maxRecords?: number;
@@ -40,7 +48,7 @@ export async function getRecords(tableName: string, options?: {
 }
 
 // Function to get the count of records in a table
-export async function getRecordCount(tableName: string, options?: {
+async function getRecordCount(tableName: string, options?: {
   filterByFormula?: string;
 }): Promise<number> {
   try {
@@ -59,7 +67,7 @@ export async function getRecordCount(tableName: string, options?: {
 }
 
 // Generic function to create a record
-export async function createRecord(tableName: string, fields: Record<string, any>): Promise<AirtableRecord> {
+async function createRecord(tableName: string, fields: Record<string, any>): Promise<AirtableRecord> {
   try {
     console.log('\n🚨 I HIT AIRTABLE - createRecord 🚨\n');
     const record = await base(tableName).create(fields);
@@ -75,7 +83,7 @@ export async function createRecord(tableName: string, fields: Record<string, any
 }
 
 // Generic function to update a record
-export async function updateRecord(
+async function updateRecord(
   tableName: string,
   recordId: string,
   fields: Record<string, any>
@@ -95,7 +103,7 @@ export async function updateRecord(
 }
 
 // Generic function to delete a record
-export async function deleteRecord(tableName: string, recordId: string): Promise<void> {
+async function deleteRecord(tableName: string, recordId: string): Promise<void> {
   try {
     console.log('\n🚨 I HIT AIRTABLE - deleteRecord 🚨\n');
     await base(tableName).destroy(recordId);
@@ -104,3 +112,11 @@ export async function deleteRecord(tableName: string, recordId: string): Promise
     throw error;
   }
 } 
+
+export const airtableApi = {
+  getRecords: isMock ? mockAirtable.getRecords : getRecords,
+  deleteRecord: isMock ? mockAirtable.deleteRecord : deleteRecord,
+  getRecordCount: isMock ? mockAirtable.getRecordCount : getRecordCount,
+  createRecord: isMock ? mockAirtable.createRecord : createRecord,
+  updateRecord: isMock ? mockAirtable.updateRecord : updateRecord,
+}

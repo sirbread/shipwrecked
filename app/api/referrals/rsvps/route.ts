@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getRecords } from '@/lib/airtable';
+import { airtableApi } from '@/lib/airtable';
+const { getRecords } = airtableApi;
 
 export async function GET() {
   try {

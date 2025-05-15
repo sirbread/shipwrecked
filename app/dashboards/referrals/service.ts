@@ -1,6 +1,8 @@
-import { getRecords, AirtableRecord } from '@/lib/airtable';
+import { airtableApi } from '@/lib/airtable';
 import { fetchRSVPs } from './actions';
 import { setRSVPData, getRSVPData } from './store';
+import type { AirtableRecord } from '@/lib/airtable';
+const { getRecords } = airtableApi;
 
 interface RSVP {
   id: string;
