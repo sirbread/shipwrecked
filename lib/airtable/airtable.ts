@@ -112,11 +112,3 @@ export async function deleteRecord(tableName: string, recordId: string): Promise
     throw error;
   }
 } 
-
-// export const airtableApi = {
-//   getRecords: isMock ? mockAirtable.getRecords : getRecords,
-//   deleteRecord: isMock ? mockAirtable.deleteRecord : deleteRecord,
-//   getRecordCount: isMock ? mockAirtable.getRecordCount : getRecordCount,
-//   createRecord: isMock ? mockAirtable.createRecord : createRecord,
-//   updateRecord: isMock ? mockAirtable.updateRecord : updateRecord,
-// }
