@@ -1,6 +1,5 @@
-import Redis from 'ioredis';
+import { redis } from '@/lib/redis';
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 const COUNT_KEY = 'rsvp_count';
 
 export async function setCount(count: number) {

@@ -27,4 +27,4 @@ const redis = {
     expire: async (...args: any) => {}
 }
 
-export default redis;
+export { redis };

@@ -1,4 +1,4 @@
-import redis from '@/lib/redis';
+import { redis } from '@/lib/redis';
 
 const RSVP_CACHE_KEY = 'rsvp_data';
 const RSVP_CACHE_TTL = 60; // 1 minute in seconds
