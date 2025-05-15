@@ -72,4 +72,4 @@ jobs:
           REDIS_URL: ${{ secrets.REDIS_URL }}
           GRAPHITE_HOST: ${{ secrets.GRAPHITE_HOST }}
           NODE_ENV: "development"
-        run: yarn build
+        run: NODE_ENV=development yarn build
