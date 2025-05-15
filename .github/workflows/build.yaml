@@ -82,4 +82,3 @@ jobs:
           echo "REDIS_URL: $REDIS_URL"
           echo "GRAPHITE_HOST: $GRAPHITE_HOST"
           echo "NODE_ENV: $NODE_ENV"
-       run: yarn build
