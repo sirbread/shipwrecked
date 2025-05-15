@@ -5,7 +5,7 @@ const {
   getRecords,
   createRecord,
   updateRecord,
-  deleteRecord
+  deleteRecord,
 } = isMock 
   ? require('./airtable.mock')
   : require('./airtable');
@@ -18,3 +18,5 @@ export {
   updateRecord,
   deleteRecord
 };
+
+export type { AirtableRecord } from "./airtable";
