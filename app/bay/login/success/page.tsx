@@ -1,8 +1,7 @@
 import { opts } from "@/app/api/auth/[...nextauth]/route";
-import { airtableApi } from "@/lib/airtable";
+import { getRecords } from "@/lib/airtable/index";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-const { getRecords } = airtableApi;
 
 // Login Successful Redirection Page
 //

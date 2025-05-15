@@ -1,10 +1,9 @@
 "use server";
 
 import { opts } from "@/app/api/auth/[...nextauth]/route";
-import { airtableApi } from "@/lib/airtable";
+import { createRecord } from "@/lib/airtable/index";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
-const { createRecord } = airtableApi;
 
 
 // The form schema for extra validation
