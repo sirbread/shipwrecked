@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { airtableApi } from '@/lib/airtable';
+import { getRecordCount } from '@/lib/airtable/index';
 import { withRateLimit } from '@/lib/rateLimit';
 import metrics from '@/metrics';
-const { getRecordCount } = airtableApi;
 
 export async function GET() {
   return withRateLimit(

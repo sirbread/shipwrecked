@@ -1,7 +1,6 @@
 'use server';
 
-import { airtableApi } from '@/lib/airtable';
-const { getRecords } = airtableApi;
+import { getRecords } from '@/lib/airtable/index';
 
 interface RSVPData {
   id: string;
