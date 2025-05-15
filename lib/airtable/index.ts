@@ -1,4 +1,5 @@
-const isMock = process.env.NODE_ENV === 'development';
+// const isMock = process.env.NODE_ENV === 'development';
+const isMock = process.env.MOCK_API === 'true';
 
 const {
   getRecordCount,
