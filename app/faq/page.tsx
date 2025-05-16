@@ -83,10 +83,9 @@ export default function FAQ() {
               Your progress is calculated based on your total hours of development work from Hackatime. Here's how it works:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>The goal is 60 hours of development time</li>
-              <li>Each project is capped at a maximum of 15 hours contribution</li>
-              <li>If a project goes viral, it automatically counts for 15 hours</li>
-              <li>Projects that aren't shipped yet are capped at 14.75 hours</li>
+              <li>For each project, up to 15 hours are counted towards the progress bar</li>
+              <li>Each hour past 15 on a project gets added to your piggy bank</li>
+              <li>You can spend your piggy bank on travel stipends and the shop which will launch at a later date</li>
             </ul>
           </div>
 
