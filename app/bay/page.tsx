@@ -853,7 +853,7 @@ function BayWithReviewMode({ session, status, router }: {
         okText="Got it!"
       >
         <div className="p-4">
-          <h3 className="text-lg font-semibold mb-3">Your Journey to Shipwreck Island</h3>
+          <h3 className="text-lg font-semibold mb-3">Your Journey to Shipwrecked</h3>
           <p className="mb-4">
             The progress bar shows your completion percentage towards the 60-hour goal required to qualify for Shipwrecked.
           </p>
@@ -866,12 +866,12 @@ function BayWithReviewMode({ session, status, router }: {
                 <strong>Green:</strong> Hours from shipped projects (projects marked as "shipped")
               </li>
               <li>
-                <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#3b82f6' }}></span>
-                <strong>Blue:</strong> Hours from viral projects (automatically count as 15 hours each)
+                <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#f59e0b' }}></span>
+                <strong>Gold:</strong> Hours from viral projects (automatically count as 15 hours each)
               </li>
               <li>
-                <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#f59e0b' }}></span>
-                <strong>Yellow:</strong> Hours from in-progress projects (not yet shipped or viral)
+                <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#3b82f6' }}></span>
+                <strong>Blue:</strong> Hours from in-progress projects (not yet shipped or viral)
               </li>
               <li>
                 <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#e5e7eb' }}></span>
@@ -883,7 +883,7 @@ function BayWithReviewMode({ session, status, router }: {
             </p>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          {/* <div className="bg-gray-50 p-4 rounded-lg mb-4">
             <h4 className="font-medium mb-2">How We Calculate Your Progress:</h4>
             <ul className="list-disc pl-5 space-y-2">
               <li>
@@ -948,7 +948,7 @@ function BayWithReviewMode({ session, status, router }: {
               <p className="mt-1">Total Hours = 15 + 15 + 10 = 40 hours</p>
               <p>Percentage = (40 ÷ 60) × 100% = 66.7% (rounded to 67%)</p>
             </div>
-          </div>
+          </div> */}
           
           <div className="bg-gray-50 p-4 rounded-lg mb-4">
             <h4 className="font-medium mb-2">Requirements for Shipwrecked:</h4>
