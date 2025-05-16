@@ -76,9 +76,9 @@ export default function ProjectReviewRequest({
       case 'ShippedApproval':
         return "Explain why this project should be approved as 'shipped'. Include any relevant details about deployment and functionality.";
       case 'ViralApproval':
-        return "Explain why this project should be considered 'viral'. Include metrics, social media presence, or other evidence of its popularity.";
+        return "Explain why this project should be considered 'viral'. Include links to social media that prove you have met one of the requirements on shipwrecked.hackclub.com/info/go-viral (if doing hacker news, link archive.org snapshot)";
       case 'HoursApproval':
-        return "Provide details about the hours spent on this project and why they should be approved.";
+        return "Provide details about the hours spent on this project since you last submitted for hour approval that backup your time logged on hackatime. (ex. I implemented feature X, Y, & Z.) Please keep it short & use bullets for readability.";
       case 'Other':
         return "Specify what you need reviewed about this project.";
       default:
