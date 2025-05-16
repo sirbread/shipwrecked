@@ -93,16 +93,9 @@ export default function FAQ() {
           <div>
             <h2 className="text-xl font-semibold mb-3 text-gray-700">What does it mean for a project to be "viral"?</h2>
             <p className="text-gray-600 mb-2">
-              A project is considered viral when it reaches a significant level of attention from the community. This includes:
-            </p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Getting featured on the Hack Club frontpage</li>
-              <li>Having 150+ stars on GitHub</li>
-              <li>Being shared widely on social media platforms</li>
-              <li>Receiving significant engagement from other Hack Clubbers</li>
-            </ul>
-            <p className="text-gray-600 mt-2">
-              When a project goes viral, it automatically counts as 15 hours towards your island journey goal!
+              Check out <a href="https://shipwrecked.hackclub.com/info/go-viral" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                shipwrecked.hackclub.com/info/go-viral
+              </a> for what it means to go viral.
             </p>
           </div>
 
@@ -116,9 +109,6 @@ export default function FAQ() {
               <li>All core functionality is working as intended</li>
               <li>Users can interact with the project without encountering major bugs</li>
             </ul>
-            <p className="text-gray-600 mt-2">
-              Until a project is marked as shipped, its hours are capped at 14.75, so make sure to deploy your projects!
-            </p>
           </div>
 
           <div>
