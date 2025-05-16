@@ -83,26 +83,18 @@ export default function FAQ() {
               Your progress is calculated based on your total hours of development work from Hackatime. Here's how it works:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>The goal is 60 hours of development time</li>
-              <li>Each project is capped at a maximum of 15 hours contribution</li>
-              <li>If a project goes viral, it automatically counts for 15 hours</li>
-              <li>Projects that aren't shipped yet are capped at 14.75 hours</li>
+              <li>For each project, up to 15 hours are counted towards the progress bar</li>
+              <li>Each hour past 15 on a project gets added to your piggy bank</li>
+              <li>You can spend your piggy bank on travel stipends and the shop which will launch at a later date</li>
             </ul>
           </div>
 
           <div>
             <h2 className="text-xl font-semibold mb-3 text-gray-700">What does it mean for a project to be "viral"?</h2>
             <p className="text-gray-600 mb-2">
-              A project is considered viral when it reaches a significant level of attention from the community. This includes:
-            </p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Getting featured on the Hack Club frontpage</li>
-              <li>Having 150+ stars on GitHub</li>
-              <li>Being shared widely on social media platforms</li>
-              <li>Receiving significant engagement from other Hack Clubbers</li>
-            </ul>
-            <p className="text-gray-600 mt-2">
-              When a project goes viral, it automatically counts as 15 hours towards your island journey goal!
+              Check out <a href="https://shipwrecked.hackclub.com/info/go-viral" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                shipwrecked.hackclub.com/info/go-viral
+              </a> for what it means to go viral.
             </p>
           </div>
 
@@ -116,9 +108,6 @@ export default function FAQ() {
               <li>All core functionality is working as intended</li>
               <li>Users can interact with the project without encountering major bugs</li>
             </ul>
-            <p className="text-gray-600 mt-2">
-              Until a project is marked as shipped, its hours are capped at 14.75, so make sure to deploy your projects!
-            </p>
           </div>
 
           <div>
