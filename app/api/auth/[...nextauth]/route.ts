@@ -226,7 +226,9 @@ export const opts: NextAuthOptions = {
         // Customize the verification email
         const { host } = new URL(url);
         try {
-          await sendAuthEmail(email, host, url);
+          const date = new Date();
+          const datetime = `[${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}] `
+          await sendAuthEmail(email, host, url, datetime);
           metrics.increment("success.send_auth_email", 1);
         } catch (err) {
           metrics.increment("errors.send_auth_email", 1);

@@ -29,13 +29,14 @@ async function sendEmailWithLoops(
     if (!result.success) throw new Error("Failed to send loops email");
 }
 
-export async function sendAuthEmail(targetEmail: string, host: string, signin_url: string) {
+export async function sendAuthEmail(targetEmail: string, host: string, signin_url: string, datetime: string) {
     await sendEmailWithLoops(
         LOOPS_TRANSACTIONAL_SIGNIN_EMAIL_ID!,
         targetEmail,
         {
             "hostname": host,
-            "signin": signin_url
+            "signin": signin_url,
+            "datetime": datetime
         }
     );
 }
