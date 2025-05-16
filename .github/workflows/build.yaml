@@ -71,6 +71,5 @@ jobs:
           NEXTAUTH_URL: http://localhost:3000
           REDIS_URL: ${{ secrets.REDIS_URL }}
           GRAPHITE_HOST: ${{ secrets.GRAPHITE_HOST }}
-          NODE_ENV: "development"
           MOCK_API: true
         run: yarn build
