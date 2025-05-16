@@ -68,7 +68,7 @@ jobs:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_URL: http://localhost:3000
           REDIS_URL: ${{ secrets.REDIS_URL }}
           GRAPHITE_HOST: ${{ secrets.GRAPHITE_HOST }}
           NODE_ENV: "development"
