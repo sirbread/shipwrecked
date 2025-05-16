@@ -900,7 +900,7 @@ function BayWithReviewMode({ session, status, router }: {
               </li>
               <li>
                 <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#f59e0b' }}></span>
-                <strong>Gold:</strong> Hours from viral projects (automatically count as 15 hours each)
+                <strong>Gold:</strong> Hours from viral projects
               </li>
               <li>
                 <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: '#3b82f6' }}></span>
