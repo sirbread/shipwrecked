@@ -1,5 +1,6 @@
-import { getRecordCount } from '@/lib/airtable';
+import { getRecordCount } from '@/lib/airtable/index';
 import { setCount, getCount } from './store';
+import metrics from '@/metrics';
 
 // Global variable to track if service is running
 let isServiceRunning = false;
@@ -34,8 +35,12 @@ export class StatsService {
       } else {
         console.log(`RSVP count remains at: ${currentCount}`);
       }
+      
+      metrics.increment("stats_service.update", 1);
     } catch (error) {
       console.error('Error in stats service:', error);
+      
+      metrics.increment("stats_service.update_fail", 1);
     }
   }
 
@@ -54,6 +59,8 @@ export class StatsService {
 
     // Then run every 10 seconds
     this.intervalId = setInterval(() => this.updateStats(), 10000);
+    
+    metrics.increment("stats_service.start", 1);
   }
 
   public stop() {
@@ -62,6 +69,9 @@ export class StatsService {
       this.intervalId = null;
     }
     isServiceRunning = false;
+    
+    metrics.increment("stats_service.stop", 1);
+    
     console.log('Stats service stopped');
   }
 }

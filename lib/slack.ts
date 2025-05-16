@@ -1,5 +1,6 @@
 import { Block, ChatPostMessageResponse, MessageAttachment, WebClient } from '@slack/web-api';
 import { User } from '@slack/web-api/dist/types/response/UsersLookupByEmailResponse';
+import metrics from '@/metrics';
 
 // Initialize Slack client
 const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
@@ -30,8 +31,10 @@ export async function sendChannelMessage(
       thread_ts: options.thread_ts,
     });
 
+    metrics.increment("sucess.send_channel_msg", 1);
     return result;
   } catch (error) {
+    metrics.increment("errors.send_channel_msg", 1);
     console.error('Error sending message to Slack channel:', error);
     throw error;
   }
@@ -66,8 +69,10 @@ export async function sendUserMessage(
       thread_ts: options.thread_ts,
     });
 
+    metrics.increment("success.send_user_msg", 1);
     return result;
   } catch (error) {
+    metrics.increment("errors.send_user_msg", 1);
     console.error('Error sending message to Slack user:', error);
     throw error;
   }
@@ -114,10 +119,12 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 export async function checkSlackUserExists(email: string): Promise<boolean> {
   try {
     await getUserByEmail(email);
+    metrics.increment("success.check_slack_user_exists", 1);
     return true;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_) {
+    metrics.increment("errors.check_slack_user_exists", 1);
     return false;
   }
 }

@@ -1,5 +1,9 @@
-import { FormSave } from "@/app/bay/submit/actions";
 import { ReactNode, ChangeEvent } from "react";
+
+export type FormSave = {
+  errors?: Record<string, string[]>;
+  data?: Record<string, any>;
+};
 
 export default function FormInput({
   fieldName,
@@ -10,6 +14,7 @@ export default function FormInput({
   disabled,
   children,
   value,
+  defaultValue,
   onChange,
 }: {
   fieldName: string;
@@ -20,6 +25,7 @@ export default function FormInput({
   disabled?: boolean;
   children: ReactNode;
   value?: string;
+  defaultValue?: string
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
@@ -52,6 +58,7 @@ export default function FormInput({
           name={fieldName}
           required={required}
           value={value}
+          defaultValue={defaultValue}
           onChange={onChange}
           disabled={disabled}
         />

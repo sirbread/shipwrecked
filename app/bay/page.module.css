@@ -1,7 +1,78 @@
 .container {
+  width: 100%;
+  min-height: 100vh;
   padding: 2rem;
-  max-width: 1200px;
+  background: #f5f5f5;
+}
+
+.content {
+  max-width: 1400px;
   margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+}
+
+.projectList {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .projectList {
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    background: #f5f5f5;
+  }
+  .content {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
+  .projectList {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.editForm {
+  display: none;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: auto;
+  max-height: calc(100vh - 8rem);
+}
+
+@media (min-width: 768px) {
+  .editForm {
+    display: block;
+    width: 60%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  
+  .projectList {
+    max-width: 40%;
+  }
+}
+
+@media (max-width: 767px) {
+  .editForm {
+    display: none;
+  }
 }
 
 .title {
@@ -11,7 +82,10 @@
 }
 
 .progressSection {
-  margin-bottom: 2rem;
+  margin-bottom: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
+  background-color: #f5f5f5;
 }
 
 .progressSection h2 {
@@ -85,4 +159,13 @@
 .modalList li {
   margin-bottom: 0.5rem;
   color: #4a5568;
+}
+
+@media (max-width: 767px) {
+  .progressSection {
+    margin-bottom: 0.25rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.25rem;
+    background-color: #f5f5f5;
+  }
 } 

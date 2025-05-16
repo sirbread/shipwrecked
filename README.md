@@ -20,39 +20,103 @@ Before Shipwrecked, participants earn their spot through "The Bay" - a 3-month o
 
 ## Local Development
 
-### Minimum Dev Prerequisites
-- docker
-- ```.env``` file containing third-party secrets (Airtable, etc).  See #shipwrecked-hq on Hack Club Slack for more details.
+### Prerequisites
+- Docker with docker-compose
+- Environment configuration (see below)
 
-### docker-compose
-To run the project in a local Docker environment with temporary resources:
+### Environment Setup
 
-1. Build the Docker image:
-```shell
-./build.sh
-```
+1. Copy the example environment file to create your own:
+   ```bash
+   cp .env.example .env
+   ```
 
-2. Start the services:
-```shell
-./run.sh
-```
+2. Fill in the required values in your `.env` file.
 
-This will start:
-- The Next.js application
-- PostgreSQL database
-- Redis cache
-- All necessary environment variables and connections
+3. We recommend symlinking `.env.local` to `.env` for Next.js to properly load your environment variables:
+   ```bash
+   ln -s .env .env.local
+   ```
+
+   This ensures that both the development server and any scripts directly reference the same environment file.
+
+### Super Admin Access
+
+The application includes a special Super Admin feature that allows granting administrator privileges to users by visiting `/superadmin` and entering a password.
+
+1. Set up the super admin password in your environment variables:
+   ```
+   SUPERADMIN_PASSWORD="your-secure-password-here"
+   ```
+
+2. Ensure this password is kept secure and only shared with trusted team members.
+
+3. To grant admin access to a user:
+   - Have them log in to their account
+   - Direct them to `/superadmin`
+   - Enter the password defined in the environment variable
+   - Upon successful authentication, they will be redirected to the admin dashboard with admin privileges
+
+This feature is particularly useful for:
+- Onboarding new administrators
+- Restoring admin access if needed
+- Quickly granting temporary admin privileges for specific tasks
+
+### Quick Start
+
+We provide two simple scripts for local development:
+
+1. **Standard Development Setup**
+   ```bash
+   ./run-debug.sh
+   ```
+   This script:
+   - Starts PostgreSQL and Redis in Docker containers
+   - Sets up Prisma with the database
+   - Runs migrations
+   - Starts the Next.js development server on your host machine
+
+2. **Clean Database Setup** (use this if you need a fresh database)
+   ```bash
+   ./run-debug-cleandb.sh
+   ```
+   This script:
+   - Removes any existing database volume
+   - Performs all the steps in the standard setup with a clean database
+
+That's it! Your development environment will be running and accessible at http://localhost:3000.
 
 ## Deployment
 
 ### Staging Environment
 - Code that lands on the `main` branch is automatically deployed to https://shipwrecked-staging.hackclub.com
-- This is our testing environment where changes are verified before going to production
-- We currently keep this under password.  See #shipwrecked-hq in Hack Club Slack for details.
+- For access details, see #shipwrecked-hq in Hack Club Slack
 
 ### Production Environment
 - Production is deployed at https://shipwrecked.hackclub.com
-- To deploy to production:
-  1. Ensure your changes are tested on staging
-  2. Run `./upgrade-prod.sh` to promote the changes to production
-  3. The script will perform necessary checks and guide you through the process
+- To deploy to production, run `./upgrade-prod.sh` after testing on staging
+
+## Contributing Guidelines
+
+When contributing to this project, please follow these guidelines to ensure a smooth review process and maintain project stability:
+
+### Pull Request Best Practices
+
+1. **For Large Refactors**: If you're making significant changes to a page or component, take an additive approach:
+   - Create a new page/component alongside the existing one
+   - Don't modify the original until your changes are approved
+   - This allows for safe, non-destructive changes
+
+2. **Before Major Changes**: Check with the internal team before starting work on:
+   - Large-scale refactors
+   - Major UI/UX changes
+   - New features that affect core functionality
+   
+3. **Cross-Device Testing**: We prioritize stability across platforms:
+   - All changes must be tested on both desktop and mobile
+   - Verify responsive behavior works correctly at different breakpoints
+   - Document any device-specific considerations in your PR
+
+4. **Code Style**: Follow the existing patterns in the codebase for consistency
+
+By following these guidelines, you'll help us maintain a stable, high-quality codebase that works well for all users.
