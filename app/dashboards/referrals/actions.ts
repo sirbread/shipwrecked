@@ -4,9 +4,6 @@ import { getRecords } from '@/lib/airtable/index';
 
 interface RSVPData {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
   referralType: string;
   referralCode: string;
   createdAt: string;
@@ -28,9 +25,6 @@ export async function fetchRSVPs() {
     // Transform records to only include the fields we need
     const rsvpData: RSVPData[] = records.map(record => ({
       id: record.id,
-      firstName: record.fields["First Name"] || '',
-      lastName: record.fields["Last Name"] || '',
-      email: record.fields["Email"] || '',
       referralType: record.fields["referral_type"] || '',
       referralCode: record.fields["referral_code"] || '',
       createdAt: record.createdTime
