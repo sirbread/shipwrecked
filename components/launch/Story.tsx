@@ -115,7 +115,17 @@ export default function Story({ prefillData }: { prefillData: PrefillData }) {
             <TriggerButton targetPercent={1} waves>Sign up</TriggerButton>
           </div>
         )}
-        {scrollPercent >= sections.cta.start && <ShareButton />}
+        {scrollPercent >= sections.cta.start && (
+          <motion.a
+            href="/bay/login"
+            className="py-3 md:px-6 px-4 uppercase italic bg-yellow text-dark-blue border border-sand whitespace-nowrap text-sm md:text-lg font-bold transition-all duration-300 hover:border-dark-blue hover:scale-105 backdrop-blur-sm rounded-full cursor-pointer active:scale-95 flex items-center gap-3 pulse-glow z-50 fixed top-8 right-8"
+            style={{display: 'inline-block'}}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Log into the Bay
+          </motion.a>
+        )}
         <div>
           {animateSectionIfWithinBounds(
             sections.shore.start,

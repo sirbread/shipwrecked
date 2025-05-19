@@ -111,14 +111,14 @@ export default function Form({ hasSession, prefillData }: { hasSession?: boolean
     setIsSubmitting(true);
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {      
-      // String all null values, don't sent 'em at all
+      // String all null values, don't send 'em at all
       if (value !== null) {
         if (key === "referral_code") {
           console.log(`Adding form field: ${key} = ${value}`);
-          data.append(key, Number(value));
+          data.append(key, String(value));
         } else {
           console.log(`Adding form field: ${key} = ${value}`);
-          data.append(key, value);  
+          data.append(key, String(value));  
         }
       }
     });
@@ -211,7 +211,7 @@ export default function Form({ hasSession, prefillData }: { hasSession?: boolean
 
           <div className="flex justify-center mt-0 md:mt-2 pt-1 md:pt-5">
             <button
-              className="py-1 md:py-2 md:px-4 px-2 uppercase disabled:bg-dark-blue/20 bg-dark-blue/60 text-sand border border-sand whitespace-nowrap text-xs md:text-base transition hover:not-disabled:border-yellow backdrop-blur-sm rounded-full cursor-pointer disabled:cursor-not-allowed"
+              className="py-1 md:py-2 md:px-4 px-2 uppercase disabled:bg-dark-blue/20 bg-dark-blue/60 text-sand border border-sand whitespace-nowrap text-xs md:text-base transition hover:not-disabled:border-yellow backdrop-blur-sm rounded-full cursor-pointer disabled:cursor-not-allowed transform-gpu hover:scale-105 focus:scale-105 duration-150"
               disabled={isSubmitting}
               type="submit"
             >
