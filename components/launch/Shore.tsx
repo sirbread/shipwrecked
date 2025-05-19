@@ -33,8 +33,12 @@ export default function Shore({ next }: { next: number }) {
                 <Image src="/location-icon.png" width={0} height={0} alt="Location Icon" className="h-[3em] w-auto py-auto"/>
                 <h2 className="md:text-3xl text-2xl font-bold text-white uppercase p-3 pl-1 w-fit text-outline-dark-blue">Cathleen Stone Island, Boston Harbor</h2>
               </div>
-              <TriggerButton targetPercent={next} waves>What&apos;s Hack Club Shipwrecked?</TriggerButton>
-              <p className="text-base font-medium text-white text-outline-dark-blue py-2">(click here or scroll to continue)</p>
+              <div className="flex flex-row gap-4 items-center">
+                <a href="/bay/login" className="py-3 md:px-6 px-4 uppercase italic bg-yellow text-dark-blue border border-sand whitespace-nowrap text-sm md:text-lg font-bold transition-all duration-300 hover:border-dark-blue hover:scale-105 backdrop-blur-sm rounded-full cursor-pointer active:scale-95 flex items-center gap-3 pulse-glow" style={{display: 'inline-block'}}>
+                  Log into the Bay
+                </a>
+                <TriggerButton targetPercent={next} waves>What&apos;s Hack Club Shipwrecked?</TriggerButton>
+              </div>
               <button className="absolute md:bottom-[calc(100vh+30px)] bottom-[calc(100vh+20px)] right-10 text-6xl" onClick={() => {
                 scrollToPercent(0);
               }}>
@@ -60,6 +64,22 @@ export default function Shore({ next }: { next: number }) {
           <p className="text-2xl italic text-center text-[#3B2715]">(Click the bottle or scroll to continue)</p>
         </div>
       </div>
+      <style jsx global>{`
+      @keyframes pulse-glow {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 214, 10, 0.7), 0 0 0 0 rgba(255, 214, 10, 0.5);
+        }
+        70% {
+          box-shadow: 0 0 0 12px rgba(255, 214, 10, 0), 0 0 0 24px rgba(255, 214, 10, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(255, 214, 10, 0.7), 0 0 0 0 rgba(255, 214, 10, 0.5);
+        }
+      }
+      .pulse-glow {
+        animation: pulse-glow 1.5s infinite;
+      }
+      `}</style>
     </motion.div>
   )
 }
