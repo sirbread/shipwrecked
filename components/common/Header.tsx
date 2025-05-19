@@ -152,6 +152,17 @@ export default function Header({ session, status }: HeaderProps) {
                                     >
                                         Audit Logs
                                     </Link>
+                                     <Link 
+                                        href="/admin/dashboards/referrals" 
+                                        className={`block px-3 py-2 rounded transition-colors ${
+                                            isActive('/admin/dashboards/referrals') || pathname.startsWith('/admin/dashboards/referrals') 
+                                                ? 'font-semibold text-[#47D1F6] bg-blue-50 border-l-4 border-[#47D1F6]' 
+                                                : 'text-gray-700 hover:bg-gray-100 hover:text-[#47D1F6] border-l-4 border-transparent'
+                                        }`}
+                                        onClick={() => setAdminMenuOpen(false)}
+                                    >
+                                        Dashboards
+                                    </Link>
                                 </div>
                             )}
                         </div>
