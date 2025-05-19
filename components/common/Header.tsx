@@ -161,7 +161,7 @@ export default function Header({ session, status }: HeaderProps) {
                                         }`}
                                         onClick={() => setAdminMenuOpen(false)}
                                     >
-                                        Dashboards
+                                        Referrals
                                     </Link>
                                 </div>
                             )}
