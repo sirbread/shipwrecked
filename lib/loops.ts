@@ -41,8 +41,8 @@ export async function sendAuthEmail(targetEmail: string, host: string, signin_ur
     );
 }
 
-export async function sendNotificationEmail(targetEmail: string, subject: string, content: string) {
+export async function sendNotificationEmail(targetEmail: string, name: string, date: string, content: string) {
     await sendEmailWithLoops(
         LOOPS_TRANSACTIONAL_NOTIFICATION_EMAIL_ID!,
-        targetEmail, { content, subject, name: subject });
+        targetEmail, { content, name, date });
 }
