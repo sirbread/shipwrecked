@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { opts } from '../auth/[...nextauth]/route';
+import { sendNotificationEmail } from '@/lib/loops';
 
 // GET reviews for a specific project
 export async function GET(request: NextRequest) {
@@ -66,6 +67,11 @@ export async function POST(request: NextRequest) {
       where: {
         projectID: body.projectID,
       },
+      include: {
+        user: {
+          select: { email: true }
+        }
+      }
     });
 
     if (!project) {
@@ -90,6 +96,15 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // nah, send the review email from here
+    const host = process.env.NEXTAUTH_URL;
+    const updateContent = `Review Update for ${project.name} just came in! Check it out at https://${host}/bay`;
+
+    const date = new Date();
+    const datetime = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}`
+          
+    await sendNotificationEmail(project.user.email, project.name, datetime, updateContent);
 
     return NextResponse.json(review, { status: 201 });
   } catch (error) {
