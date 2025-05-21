@@ -9,6 +9,10 @@ import Icon from '@hackclub/icons';
 import { ReviewModeProvider, useReviewMode } from '../contexts/ReviewModeContext';
 import ProjectStatus from '../components/common/ProjectStatus';
 import ReviewSection from '@/components/common/ReviewSection';
+import { useMDXComponents } from '@/mdx-components';
+import { lazy, Suspense } from 'react';
+
+const MDXContent = lazy(() => import('./guidelines.mdx'));
 
 function Loading() {
   return (
@@ -316,6 +320,7 @@ function ReviewPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { enableReviewMode } = useReviewMode();
+  const components = useMDXComponents({});
   
   // Add filter state
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -497,13 +502,32 @@ function ReviewPage() {
         
         {/* Project Detail Modal */}
         {selectedProject && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="max-w-3xl w-full h-[90vh] overflow-auto">
-              <ProjectDetail 
-                project={selectedProject} 
-                onClose={() => setSelectedProject(null)}
-                onReviewSubmitted={handleReviewSubmitted}
-              />
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 w-[100vw]">
+            <div className="max-w-8xl h-full overflow-auto md:m-5">
+              <div className="flex flex-col md:flex-row gap-4 h-full">
+                {/* Guidelines panel from MDX file */}
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden w-full md:w-1/2 h-1/3 md:h-full flex flex-col">
+                  <div className="p-4 bg-gray-50 border-b flex-shrink-0">
+                    <h2 className="text-xl font-bold">Review Guidelines</h2>
+                  </div>
+                  <div className="p-4 flex-grow overflow-hidden">
+                    <div className="prose prose-sm max-w-none overflow-y-auto h-full">
+                      <Suspense fallback={<div>Loading guidelines...</div>}>
+                        <MDXContent components={components} />
+                      </Suspense>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Project detail panel */}
+                <div className="w-full md:w-1/2 h-2/3 md:h-full overflow-auto rounded-lg">
+                  <ProjectDetail 
+                    project={selectedProject} 
+                    onClose={() => setSelectedProject(null)}
+                    onReviewSubmitted={handleReviewSubmitted}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
