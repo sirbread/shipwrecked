@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+// load environment variables
+require("dotenv").config();
+
 const port = process.env.PORT || 3003;
 const SLACK_NOTIFICATION_WEBHOOK = process.env.SLACK_NOTIFICATION_WEBHOOK;
 
