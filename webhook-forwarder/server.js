@@ -14,7 +14,7 @@ app.get("/", (req, res) => res.send("Hello"));
 
 // Simple POST endpoint that accepts JSON
 app.post('/webhook', async (req, res) => {
-  const data = req.body;
+  const body = req.body;
 
   console.log("got body", body);
   const message = body.attachments[0].blocks[1].text.text.split("\n")[0];
