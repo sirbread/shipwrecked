@@ -16,6 +16,7 @@ app.get("/", (req, res) => res.send("Hello"));
 app.post('/webhook', async (req, res) => {
   const data = req.body;
 
+  console.log("got body", body);
   const message = body.attachments[0].blocks[1].text.text.split("\n")[0];
   const payload = {"text": message};
 
@@ -23,6 +24,7 @@ app.post('/webhook', async (req, res) => {
     method: "POST",
     body: JSON.stringify(payload)
   });
+  console.log("sent payload", payload);
 
   res.status(200).end();
 });
