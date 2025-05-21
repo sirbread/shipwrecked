@@ -516,7 +516,10 @@ function ReviewPage() {
                   <div className="p-4 flex-grow overflow-hidden">
                     <div className="prose prose-sm max-w-none overflow-y-auto h-full">
                       <Suspense fallback={<div>Loading guidelines...</div>}>
-                        <MDXContent components={components} />
+                        {selectedProject.latestReview?.reviewType == 'ShippedApproval' && <MDXShippedApproval components={components} />}
+                        {selectedProject.latestReview?.reviewType == 'ViralApproval' && <MDXViralApproval components={components} />}
+                        {selectedProject.latestReview?.reviewType == 'HoursApproval' && <MDXHoursApproval components={components} />}
+                        {selectedProject.latestReview?.reviewType == 'Other' && <MDXOther components={components} />}
                       </Suspense>
                     </div>
                   </div>
