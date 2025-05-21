@@ -12,7 +12,10 @@ import ReviewSection from '@/components/common/ReviewSection';
 import { useMDXComponents } from '@/mdx-components';
 import { lazy, Suspense } from 'react';
 
-const MDXContent = lazy(() => import('./guidelines.mdx'));
+const MDXShippedApproval = lazy(() => import('./review-guidelines/shipped-approval.mdx'));
+const MDXViralApproval = lazy(() => import('./review-guidelines/viral-approval.mdx'));
+const MDXHoursApproval = lazy(() => import('./review-guidelines/ship-update-approval.mdx')); // you can rename this variable and file once HoursApproval is changed
+const MDXOther = lazy(() => import('./review-guidelines/other.mdx'));
 
 function Loading() {
   return (
