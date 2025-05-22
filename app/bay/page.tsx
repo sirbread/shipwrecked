@@ -235,7 +235,7 @@ function ProjectDetail({
   // console.log(`ProjectDetail rendering: ${project.name}, hours=${projectHours}, viral=${project.viral}, shipped=${project.shipped}`);
   
   return (
-    <div className={`${styles.editForm} max-h-screen overflow-y-auto`}>
+    <div className={`${styles.editForm} md:max-h-screen md:overflow-y-scroll`}>
       <div className="flex justify-between items-center mb-5 border-b pb-3 sticky top-0 bg-white z-10"
         style={{ paddingTop: '1.5rem' }}
       >
